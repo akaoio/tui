@@ -1,0 +1,21 @@
+{
+  "name": "lipgloss-wasm",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts && node -e \"require('fs').copyFileSync('src/lip.wasm', 'dist/lip.wasm')\"",
+    "lint": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@changesets/cli": "^2.27.9",
+    "@types/node": "^22.8.4",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3"
+  }
+}
