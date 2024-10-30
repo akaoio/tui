@@ -40,7 +40,8 @@ import { initLip, Lipgloss } from "../dist";
 
     lip.newStyle("I am a text", "text1")
     .canvasColor("#7D56F4", 1)
-    // .padding(0, 0, 0, 10);
+    .border("thick", true, true, false, false, "216")
+    .margin(10, 10, 10, 10);
 
     lip.newStyle("I am text 2", "text2")
     .canvasColor("#7D56F4", 1)
@@ -49,7 +50,8 @@ import { initLip, Lipgloss } from "../dist";
     const id =  lip.JoinHorizontal("bottom", "text1", "text2")
     
    lip.newStyle("Another style hey I don't know what to write", "myid3")
-   .canvasColor("126", 1);
+   .canvasColor("126", 1)
+   .border("rounded", true, false);
   
    if(!id)
       return 
@@ -57,7 +59,8 @@ import { initLip, Lipgloss } from "../dist";
 const id2 = lip.JoinVertical("bottom", id, "myid3" )
 
   lip.newStyle("Hello World", "myid4").
-  canvasColor("127", 1);
+  canvasColor("127", 1)
+  .border("rounded", true);
 
   if(!id2)
     return

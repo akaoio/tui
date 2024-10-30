@@ -85,7 +85,9 @@ export async function initLip(){
 
 // render()
 type lipglosspos = "bottom" | "top" | "left" | "right"
+type borderType = "rounded" | "block" | "thick" | "double" 
 export class Lipgloss {
+  
     /**
      * 
      * @param text the text data to style and render in the cli 
@@ -158,7 +160,28 @@ export class Lipgloss {
 
         return this;
     }
+
+
+    // border
+    /**
+     * 
+     * @param borderType 
+     * @param args booleans values for sides e.g true false for border at top and bottom, all four sides are required to style the border for now
+     *   e.g   ```jsborder("rounded", true, true, false, false, "216")```  background then froground color 
+     * @returns 
+     */
+    border(borderType: borderType, ...args: (string | boolean)[] ){
+       if("border" in globalThis){
+       const b = (globalThis as any).border as (borderType: string, ...args: (string | boolean)[] ) => void
+         b(borderType, ...args)
+
+       }
+       return this
+    }
 }
+
+
+
 
 
 
