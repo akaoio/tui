@@ -72,7 +72,93 @@ export async function initLip(){
          }
    
         
+         return true
     }
     
     
+    return false
 }
+
+
+
+
+
+// render()
+type lipglosspos = "bottom" | "top" | "left" | "right"
+export class Lipgloss {
+    /**
+     * 
+     * @param text the text data to style and render in the cli 
+     * @param elementId a unique id to track this element in wasm go for re-use (like a dom element id)
+     */
+     newStyle(text: string, elementId: string) {
+        if ('newStyle' in globalThis) {
+            const newStyle = (globalThis as any).newStyle as (name: string, id: string) => void;
+
+            newStyle(text, elementId);
+        }
+
+        return this;
+    }
+
+    /**
+     * 
+     * @param color lipgloss color - e.g "#7D56F4"
+     * @param isBackground 1 for true else 0 to intepret as foreground
+     */
+     canvasColor(color: string, isBackground:number){
+            if('canvasColor' in globalThis){
+                const canvasColor = (globalThis as any).canvasColor as (color: string, isBackground: number) => void;
+                canvasColor(color, isBackground)
+            }
+
+            return this;
+    }
+    // top, right, bottom, left
+
+     margin(top: number, right: number, bottom: number, left: number ){
+        if('margin' in globalThis){
+            const margin = (globalThis as any).margin as (top: number, right: number, bottom: number, left: number ) => void;
+           margin(top, right, bottom, left)
+        }
+
+        return this;
+    }
+
+     padding(top: number, right: number, bottom: number, left: number ){
+        if('padding' in globalThis){
+            const padding = (globalThis as any).padding as (top: number, right: number, bottom: number, left: number ) => void;
+           padding(top, right, bottom, left)
+        }
+
+        return this;
+    }
+
+
+     JoinHorizontal(position: lipglosspos | number,...args: string[]){
+        if("JoinHorizontal" in globalThis){
+            const JoinHorizontal = (globalThis as any).JoinHorizontal as (position: lipglosspos | number, ...args: string[]) => string;
+           return JoinHorizontal(position, ...args)
+        }
+        
+    }
+
+     JoinVertical(position: lipglosspos | number,...args: string[]){
+        if("JoinVertical" in globalThis){
+            const JoinVertical = (globalThis as any).JoinVertical as (position: lipglosspos | number, ...args: string[]) => string;
+            return JoinVertical(position, ...args)
+        }
+        
+    }
+
+    render(){
+        if ("render" in globalThis){
+            (globalThis as any).render()
+        }
+
+        return this;
+    }
+}
+
+
+
