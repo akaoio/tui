@@ -54,39 +54,161 @@ interface ImportObject {
 
 
 
-export async function initLip(){
-    // load the wasm
-    const wasmExec = await import('./wasm_exec.js');
+// export async function initLip(){
+//     // load the wasm
+//     const wasmExec = await import('./wasm_exec.js');
 
-    wasmExec.default();
+//     wasmExec.default();
 
-    const go: gowasm = new (globalThis as any).Go()
+//     const go: gowasm = new (globalThis as any).Go()
+//    const wasmfile = fs.readFileSync("./src/lip.wasm")
+//    console.log(wasmfile)
+//     const res = await WebAssembly.instantiate(wasmfile, go.importObject as unknown as  WebAssembly.Imports)
 
-    const res = await WebAssembly.instantiate(fs.readFileSync("./src/lip.wasm"), go.importObject as unknown as  WebAssembly.Imports)
-
-    if(res){
-        go.run(res.instance)
-         const a  = 'newStyle' in globalThis
-        if(!a){
-          throw new Error("Failed to init wasm")
-         }
+//     if(res){
+//         go.run(res.instance)
+//          const a  = 'newStyle' in globalThis
+//         if(!a){
+//           throw new Error("Failed to init wasm")
+//          }
    
         
-         return true
+//          return true
+//     }
+    
+    
+//     return false
+// }
+
+
+
+import path from 'path';
+
+import { fileURLToPath } from 'url';
+// const __dirname:string = typeof __dirname !== 'undefined' 
+//     ? __dirname
+//     : path.dirname(fileURLToPath(import.meta.url));
+
+
+let dir:string;
+
+
+if(__dirname){
+  dir = __dirname
+}else{
+  dir = path.dirname(fileURLToPath(import.meta.url))
+}
+
+export async function initLip() {
+    // Import wasm_exec.js and initialize Go environment
+    const wasmExec = await import('./wasm_exec');
+    wasmExec.default();
+
+
+
+    if (!(globalThis as any).Go) {
+      throw new Error("Failed to initialize Go from wasm_exec.js");
+  }
+    // Create a new Go instance
+    const go =new (globalThis as any).Go();
+
+    // Ensure path to the wasm file is correct
+    const wasmPath = path.resolve(dir, './lip.wasm');
+    const wasmfile = fs.readFileSync(wasmPath);
+
+    // Instantiate the WebAssembly module
+    const res = await WebAssembly.instantiate(wasmfile, go.importObject);
+
+    if (res) {
+        // Run the Go WASM instance
+        go.run(res.instance);
+
+        // Check if the WASM module initialized correctly
+        if (!('createStyle' in globalThis)) {
+            throw new Error("Failed to init wasm");
+        }
+
+        console.log("WASM loaded successfully");
+        return true;
     }
-    
-    
-    return false
+
+    return false;
 }
 
 
 
 
+interface style {
+   id: string
+   canvasColor?: {color?: string, background?: string}
+   border?: {type: borderType, foreground?: string, background?: string, sides:Array<boolean>}
+   padding?: Array<number>
+   margin: Array<number>
+   bold?: boolean
+   align?: lipglosspos
+   width?: number
+   height?: number,
+   maxWidth?: number,
+   maxHeight?: number
+   
+}
+
+
+
+	// lip.createStyle({
+	//     id: "primaryButton",
+	//     canvasColor: {color: "#007BFF", isBackground: true},
+	//     border: { type: "rounded", foreground: "#0056b3", background: "", sides: [true, false] },
+	//     padding: [8, 12, 8, 12],
+	//     margin: [0, 0, 10, 0],
+	//     bold: true,
+	//     align: "center",
+	//     width: 100,
+	//     height: 100
+	// });
+
 
 // render()
-type lipglosspos = "bottom" | "top" | "left" | "right"
+type lipglosspos = "bottom" | "top" | "left" | "right" | "center"
 type borderType = "rounded" | "block" | "thick" | "double" 
+type direction = "vertical" | "horizontal"
 export class Lipgloss {
+
+
+  createStyle(style: style){
+      if ("createStyle" in globalThis){
+        (globalThis as any).createStyle(style)
+      }
+  }
+  /**
+   * 
+   * @param config value to render and an optional id for a specific style, if no id is provided the recently created style is applied
+   * @returns 
+   */
+  apply(config: {value: string, id?: string}): string{
+    if ("apply" in globalThis){
+     return (globalThis as any).apply(config)
+    }
+
+    return ""
+  }
+
+  
+// lip.join({
+// 	direction: "vertical",
+// 	position: "bottom",
+// 	elements: ['', ''],
+//  pc
+// })
+  join(config: {direction: direction, position:lipglosspos , elements: Array<string>, pc?: number} = {direction: "horizontal", position: "left", elements: ['']}) :string{
+   
+     if("join" in globalThis){
+      return  (globalThis as any).join(config)
+     }
+
+     return ""
+
+  }
   
     /**
      * 
@@ -178,6 +300,24 @@ export class Lipgloss {
        }
        return this
     }
+
+    width(width: number ){
+        if("width" in globalThis){
+        const w = (globalThis as any).width as (width:number) => void
+          w(width)
+ 
+        }
+        return this
+     }
+
+     height(height: number ){
+        if("height" in globalThis){
+        const h = (globalThis as any).width as (width:number) => void
+          h(height)
+ 
+        }
+        return this
+     }
 }
 
 
