@@ -9,9 +9,23 @@
     "build": "tsup src/index.ts --format cjs,esm --dts && node -e \"require('fs').copyFileSync('src/lip.wasm', 'dist/lip.wasm')\"",
     "lint": "tsc"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["Tui", "Terminal UI'S", "CLI", "Charm CLI"],
+  "author": "Sifundo Mhlungu <mhlungusk@gmail.com>",
   "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SfundoMhlungu/charsm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SfundoMhlungu/charsm/issues"
+  },
+  "homepage": "https://github.com/SfundoMhlungu/charsm#README",
   "devDependencies": {
     "@changesets/cli": "^2.27.9",
     "@types/node": "^22.8.4",
