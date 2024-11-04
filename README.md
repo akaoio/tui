@@ -52,7 +52,6 @@ At its core, Charsm lets you define styles similar to CSS, which can then be app
         padding: [6, 8, 6, 8],
         margin: [0, 0, 8, 0],
         bold: true,
-        align: 'center',
         width: 10,
         height: 12,
     });
