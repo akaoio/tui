@@ -6,6 +6,8 @@ I’m a huge fan of CLI tools and have been building a lot of them lately. Natur
 
 If you’re looking to build beautiful TUIs, this library is for you!
 
+![temp placeholder](https://raw.githubusercontent.com/SfundoMhlungu/Assets-for-Software-Design-Documents/refs/heads/main/charsm.png)
+
 ## Installation
 
 Install from npm with your favorite package manager:
@@ -19,7 +21,7 @@ pnpm add charsm
 ### Initialization
 
 ```js
-import { initLip, Lipgloss } from "charsm";
+import {initLip, Lipgloss} from "charsm"
 
 (async function() {
     const isInit = await initLip(); // returns false if WASM fails to load, otherwise true
@@ -101,16 +103,33 @@ alignV works!
 ### Simple Example
 
 ```js
-lip.createStyle({
-    id: "primary",
-    canvasColor: { color: "#7D56F4" },
-    border: { type: "rounded", background: "#0056b3", sides: [true] },
-    padding: [6, 8, 6, 8],
-    margin: [0, 8, 8, 8],
+    lip.createStyle({
+        id: "primary",
+        canvasColor: { color: "#7D56F4" },
+        border: { type: "rounded", background: "#0056b3", sides: [true] },
+        padding: [6, 8, 6, 8],
+        margin: [0, 2, 8, 2],
+        bold: true,
+        align: 'center',
+        width: 10,
+        height: 12,
+    });;
+
+ lip.createStyle({
+    id: "secondary",
+  canvasColor: {color: "#7D56F4" },
+  border: { type: "rounded", background: "#0056b3", sides: [true, false] },
+  padding: [6, 8, 6, 8],
+   margin: [0, 0, 8, 1],
     bold: true,
-    width: 10,
-    height: 12,
-});
+    // alignH: "right",
+
+   alignV: "bottom",
+   width: 10, 
+   height: 12,
+
+  });
+
 
 const a = lip.apply({ value: "Charsmmm", id: "secondary" });
 const b = lip.apply({ value: "🔥🦾🍕", id: "primary" });
