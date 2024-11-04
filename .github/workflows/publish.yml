@@ -28,3 +28,5 @@ jobs:
               with:
                 publish: |
                   pnpm run build
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
