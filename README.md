@@ -6,7 +6,7 @@ I’m a huge fan of CLI tools and have been building a lot of them lately. Natur
 
 If you’re looking to build beautiful TUIs, this library is for you!
 
-![temp placeholder](https://raw.githubusercontent.com/SfundoMhlungu/Assets-for-Software-Design-Documents/refs/heads/main/charsm.png)
+![temp placeholder](https://raw.githubusercontent.com/SfundoMhlungu/Assets-for-Software-Design-Documents/refs/heads/main/377967919-99c5c015-551b-4897-8cd1-bcaafa0aad5a.png)
 
 ## Installation
 
