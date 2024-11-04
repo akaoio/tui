@@ -128,13 +128,13 @@ export async function initLip() {
             throw new Error("Failed to init wasm");
         }
 
-        console.log("WASM loaded successfully");
+        // console.log("WASM loaded successfully");
         return true;
     }
 
     return false;
 }
-
+ 
 
 
 
@@ -145,7 +145,8 @@ interface style {
    padding?: Array<number>
    margin: Array<number>
    bold?: boolean
-   align?: lipglosspos
+   alignV?: lipglosspos
+   alignH?: lipglosspos
    width?: number
    height?: number,
    maxWidth?: number,
@@ -154,6 +155,18 @@ interface style {
 }
 
 
+interface tableData {
+  headers: Array<string>
+  rows: Array<Array<string>>
+
+}
+
+interface table{
+  data: tableData,
+  table: {border: borderType, color: string, width?:number, height?:number},
+  header?: {color: string, bold: boolean},
+  rows?: {even: {color: string}, odd?: {color: string}}
+}
 
 	// lip.createStyle({
 	//     id: "primaryButton",
@@ -210,114 +223,13 @@ export class Lipgloss {
 
   }
   
-    /**
-     * 
-     * @param text the text data to style and render in the cli 
-     * @param elementId a unique id to track this element in wasm go for re-use (like a dom element id)
-     */
-     newStyle(text: string, elementId: string) {
-        if ('newStyle' in globalThis) {
-            const newStyle = (globalThis as any).newStyle as (name: string, id: string) => void;
-
-            newStyle(text, elementId);
-        }
-
-        return this;
-    }
-
-    /**
-     * 
-     * @param color lipgloss color - e.g "#7D56F4"
-     * @param isBackground 1 for true else 0 to intepret as foreground
-     */
-     canvasColor(color: string, isBackground:number){
-            if('canvasColor' in globalThis){
-                const canvasColor = (globalThis as any).canvasColor as (color: string, isBackground: number) => void;
-                canvasColor(color, isBackground)
-            }
-
-            return this;
-    }
-    // top, right, bottom, left
-
-     margin(top: number, right: number, bottom: number, left: number ){
-        if('margin' in globalThis){
-            const margin = (globalThis as any).margin as (top: number, right: number, bottom: number, left: number ) => void;
-           margin(top, right, bottom, left)
-        }
-
-        return this;
-    }
-
-     padding(top: number, right: number, bottom: number, left: number ){
-        if('padding' in globalThis){
-            const padding = (globalThis as any).padding as (top: number, right: number, bottom: number, left: number ) => void;
-           padding(top, right, bottom, left)
-        }
-
-        return this;
-    }
-
-
-     JoinHorizontal(position: lipglosspos | number,...args: string[]){
-        if("JoinHorizontal" in globalThis){
-            const JoinHorizontal = (globalThis as any).JoinHorizontal as (position: lipglosspos | number, ...args: string[]) => string;
-           return JoinHorizontal(position, ...args)
-        }
-        
-    }
-
-     JoinVertical(position: lipglosspos | number,...args: string[]){
-        if("JoinVertical" in globalThis){
-            const JoinVertical = (globalThis as any).JoinVertical as (position: lipglosspos | number, ...args: string[]) => string;
-            return JoinVertical(position, ...args)
-        }
-        
-    }
-
-    render(){
-        if ("render" in globalThis){
-            (globalThis as any).render()
-        }
-
-        return this;
-    }
-
-
-    // border
-    /**
-     * 
-     * @param borderType 
-     * @param args booleans values for sides e.g true false for border at top and bottom, all four sides are required to style the border for now
-     *   e.g   ```jsborder("rounded", true, true, false, false, "216")```  background then froground color 
-     * @returns 
-     */
-    border(borderType: borderType, ...args: (string | boolean)[] ){
-       if("border" in globalThis){
-       const b = (globalThis as any).border as (borderType: string, ...args: (string | boolean)[] ) => void
-         b(borderType, ...args)
-
-       }
-       return this
-    }
-
-    width(width: number ){
-        if("width" in globalThis){
-        const w = (globalThis as any).width as (width:number) => void
-          w(width)
- 
-        }
-        return this
+  newTable(config: table): string {
+     if("newTable" in globalThis){
+        config.data = JSON.stringify(config.data) as any as tableData
+        return (globalThis as any).newTable(config)
      }
-
-     height(height: number ){
-        if("height" in globalThis){
-        const h = (globalThis as any).width as (width:number) => void
-          h(height)
- 
-        }
-        return this
-     }
+    return ""
+  }
 }
 
 
