@@ -1,3 +1,8 @@
+
+
+
+
+
 # Charsm
 
 Charsm is a port of the gorgeous [Lipgloss](https://github.com/charmbracelet/lipgloss) library from Charm CLI, part of their impressive suite of CLI tools. Definitely check out Charm’s collection of [tools](https://charm.sh/); they’re fantastic.
@@ -7,6 +12,35 @@ I’m a huge fan of CLI tools and have been building a lot of them lately. Natur
 If you’re looking to build beautiful TUIs, this library is for you!
 
 ![temp placeholder](https://raw.githubusercontent.com/SfundoMhlungu/Assets-for-Software-Design-Documents/refs/heads/main/377967919-99c5c015-551b-4897-8cd1-bcaafa0aad5a.png)
+
+
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+- [Charsm](#charsm)
+   * [Installation](#installation)
+   * [Getting Started](#getting-started)
+      + [Initialization](#initialization)
+      + [Creating Styles](#creating-styles)
+      + [Style Options](#style-options)
+      + [Padding and Margins](#padding-and-margins)
+      + [Simple Example](#simple-example)
+   * [Layout](#layout)
+   * [Creating Tables](#creating-tables)
+   * [Render Markdown](#render-markdown)
+   * [Porting Lipgloss with WASM](#porting-lipgloss-with-wasm)
+   * [Plan](#plan)
+   * [Contribution](#contribution)
+   * [Notes on Building an Executable](#notes-on-building-an-executable)
+   * [Documentation: Bundling the Node Application with `charsm` WASM File](#documentation-bundling-the-node-application-with-charsm-wasm-file)
+      + [Step 1: Accessing the WASM File in `charsm`](#step-1-accessing-the-wasm-file-in-charsm)
+      + [Step 2: Bundling with `pkg`](#step-2-bundling-with-pkg)
+      + [Step 3: Bundling with `nexe`](#step-3-bundling-with-nexe)
+      + [Step 4: Bundling with `electron-builder` (For Electron Apps)](#step-4-bundling-with-electron-builder-for-electron-apps)
+      + [Conclusion](#conclusion)
+
+<!-- TOC end -->
+
+<!-- TOC --><a name="charsm"></a>
 
 ## Installation
 
@@ -171,6 +205,59 @@ const t = lip.newTable({
 console.log(t);
 ```
 
+## Render Markdown
+
+use's [glamour](github.com/charmbracelet/glamour) from charm CLI underneath
+
+```js
+
+
+  const content = `
+# Today’s Menu
+
+## Appetizers
+
+| Name        | Price | Notes                           |
+| ---         | ---   | ---                             |
+| Tsukemono   | $2    | Just an appetizer               |
+| Tomato Soup | $4    | Made with San Marzano tomatoes  |
+| Okonomiyaki | $4    | Takes a few minutes to make     |
+| Curry       | $3    | We can add squash if you’d like |
+
+## Seasonal Dishes
+
+| Name                 | Price | Notes              |
+| ---                  | ---   | ---                |
+| Steamed bitter melon | $2    | Not so bitter      |
+| Takoyaki             | $3    | Fun to eat         |
+| Winter squash        | $3    | Today it's pumpkin |
+
+## Desserts
+
+| Name         | Price | Notes                 |
+| ---          | ---   | ---                   |
+| Dorayaki     | $4    | Looks good on rabbits |
+| Banana Split | $5    | A classic             |
+| Cream Puff   | $3    | Pretty creamy!        |
+
+All our dishes are made in-house by Karen, our chef. Most of our ingredients
+are from our garden or the fish market down the street.
+
+Some famous people that have eaten here lately:
+
+* [x] René Redzepi
+* [x] David Chang
+* [ ] Jiro Ono (maybe some day)
+
+Bon appétit!
+`
+
+  // technically not part of lip(lipgloss)
+  console.log(lip.RenderMD(content, "tokyo-night"))
+
+
+```
+
 ## Porting Lipgloss with WASM
 
 The implementation here is a straightforward 1-to-1 port! In other words, for example `createStyle` is built up from a bunch of lipgloss functions with conditional checks. It’s verbose, kind of repetitive, and maybe even a bit annoying.
@@ -223,6 +310,7 @@ func (l *lipWrapper) Join(this js.Value, args []js.Value) interface{} {
 ```
 
 That's why some features like adaptive colors aren’t implemented just yet—those will come later!
+
 
 ## Plan
 
