@@ -185,6 +185,8 @@ interface table{
 type lipglosspos = "bottom" | "top" | "left" | "right" | "center"
 type borderType = "rounded" | "block" | "thick" | "double" 
 type direction = "vertical" | "horizontal"
+
+type markdownStyles = "dark" | "light" | "dracula" | "notty" | "tokyo-night" | "ascii"
 export class Lipgloss {
 
 
@@ -229,6 +231,14 @@ export class Lipgloss {
         return (globalThis as any).newTable(config)
      }
     return ""
+  }
+
+
+  RenderMD(content: string = "", style: markdownStyles = "dark") {
+    if("RenderMD" in globalThis){
+      (globalThis as any).RenderMD(content, style)
+    }
+
   }
 }
 
