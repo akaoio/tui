@@ -234,10 +234,12 @@ export class Lipgloss {
   }
 
 
-  RenderMD(content: string = "", style: markdownStyles = "dark") {
+  RenderMD(content: string = "", style: markdownStyles = "dark"): string {
     if("RenderMD" in globalThis){
-      (globalThis as any).RenderMD(content, style)
+     return  (globalThis as any).RenderMD(content, style)
     }
+
+    return ""
 
   }
 }
