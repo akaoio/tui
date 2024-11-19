@@ -138,9 +138,13 @@ export async function initLip() {
 
 
 
+type adaptiveColor = {Light: string, Dark: string}
+type completeAdaptiveColor= {  Light:{TrueColor: string, ANSI256: string, ANSI: string}, Dark: {TrueColor: string, ANSI256: string, ANSI: string}}
+type completeColor = {TrueColor: string, ANSI256: string, ANSI: string}
+
 interface style {
    id: string
-   canvasColor?: {color?: string, background?: string}
+   canvasColor?: {color?: string | {adaptiveColor: adaptiveColor} | {completeAdaptiveColor:completeAdaptiveColor} | {completeColor: completeColor}, background?: string| {adaptiveColor: adaptiveColor} | {completeAdaptiveColor:completeAdaptiveColor} | {completeColor: completeColor}}
    border?: {type: borderType, foreground?: string, background?: string, sides:Array<boolean>}
    padding?: Array<number>
    margin: Array<number>
@@ -187,6 +191,16 @@ type borderType = "rounded" | "block" | "thick" | "double"
 type direction = "vertical" | "horizontal"
 
 type markdownStyles = "dark" | "light" | "dracula" | "notty" | "tokyo-night" | "ascii"
+
+type listStyle = "alphabet" | 'arabic' | 'asterisk' | 'custom'
+
+interface simpleList {
+  data: Array<string>
+  selected?: Array<string>
+  listStyle: listStyle,
+  customEnum?: string
+  styles: {numeratorColor: string, itemColor: string, marginRight: number}
+}
 export class Lipgloss {
 
 
@@ -242,6 +256,21 @@ export class Lipgloss {
     return ""
 
   }
+// console.log(List({data: JSON.stringify(["A", "B", 'C']), selected: JSON.stringify([]), styles: {numeratorColor: "99",itemColor: "212", marginRight: 4  }})
+
+  List(config: simpleList = {data: [], selected: [], listStyle: "asterisk", customEnum: "→", styles: {numeratorColor: "99", itemColor: "212", marginRight: 1}}):string{
+
+   if("List" in globalThis){
+      return (globalThis as any).List({data: JSON.stringify(config.data),selected: JSON.stringify(config.selected), styles: config.styles, listStyle: config.listStyle, customEnum: config.customEnum})
+   }
+    return ""
+  } 
+
+  // console.log(NdList({data: JSON.stringify(ndO), selected: JSON.stringify(["C", "D"]), listStyle: "custom", customEnum: "→", styles: {numeratorColor: "99",itemColor: "212", marginRight: 4 }, innerStyles: {numeratorColor: "99",itemColor: "212", marginRight: 4, listStyle: "", customEnum: "→", selected: JSON.stringify(["Baking Flour","Eggs" ])}}))
+   
+  // NDList(config): string{
+  //    return ""
+  // }
 }
 
 
