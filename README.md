@@ -169,6 +169,36 @@ const b = lip.apply({ value: "🔥🦾🍕", id: "primary" });
 const c = lip.apply({ value: 'Charsmmm', id: "secondary" });
 ```
 
+## colors  - for both color, background and border
+
+1. completeAdaptiveColor
+
+```js
+ lip.createStyle({
+       id: "primary",
+     canvasColor: {color: "#7D56F4", background:{completeAdaptiveColor: {  Light:{TrueColor: "#d7ffae", ANSI256: "193", ANSI: "11"}, Dark: {TrueColor: "#d75fee", ANSI256: "163", ANSI: "5"}}}},
+   
+
+     });
+
+```
+
+2. Adaptive Color 
+
+
+```js
+ const highlight = { Light: "#874BFD", Dark: "#7D56F4" }
+ canvasColor: { color:{ adaptiveColor: highlight } , background:  "#FAFAFA" },
+
+```
+
+3. completColor 
+
+```js
+ canvasColor: {color: {completeColor: {TrueColor: "#d7ffae", ANSI256: "193", ANSI: "11"}}}
+
+```
+
 ## Layout
 
 Charsm currently supports horizontal and vertical layouts.
