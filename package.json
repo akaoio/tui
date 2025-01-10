@@ -6,10 +6,15 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts && node -e \"require('fs').copyFileSync('src/lip.wasm', 'dist/lip.wasm')\"",
+   "build": "tsup src/index.ts --format cjs,esm --dts && node -e \"require('fs').copyFileSync('src/lip.wasm', 'dist/lip.wasm')\" && node -e \"require('fs').cpSync('src/binary', 'dist/binary', { recursive: true })\"",
     "lint": "tsc"
   },
-  "keywords": ["Tui", "Terminal UI'S", "CLI", "Charm CLI"],
+  "keywords": [
+    "Tui",
+    "Terminal UI'S",
+    "CLI",
+    "Charm CLI"
+  ],
   "author": "Sifundo Mhlungu <mhlungusk@gmail.com>",
   "license": "ISC",
   "files": [
@@ -28,8 +33,15 @@
   "homepage": "https://github.com/SfundoMhlungu/charsm#README",
   "devDependencies": {
     "@changesets/cli": "^2.27.9",
+    "@types/ffi-napi": "^4.0.10",
     "@types/node": "^22.8.4",
     "tsup": "^8.3.5",
     "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "@makeomatic/ffi-napi": "^4.2.0",
+    "@makeomatic/ref-napi": "^3.0.6",
+    "ffi-rs": "^1.2.2",
+    "ref-struct-di": "^1.1.1"
   }
 }
