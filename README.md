@@ -49,6 +49,11 @@ Install from npm with your favorite package manager:
 ```bash
 pnpm add charsm
 ```
+## Update v0.2.0
+
+added huh [forms](https://github.com/SfundoMhlungu/huh-shared-lib)
+
+original charmcli huh [repo](https://github.com/charmbracelet/huh)
 
 ## Getting Started
 
