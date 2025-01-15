@@ -53,6 +53,8 @@ pnpm add charsm
 
 added huh [forms](https://github.com/SfundoMhlungu/huh-shared-lib)
 
+Tested on  Node.js v20.15.0 both linux and windows
+
 original charmcli huh [repo](https://github.com/charmbracelet/huh)
 
 ## Getting Started
