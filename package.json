@@ -1,7 +1,7 @@
 {
-  "name": "charsm",
+  "name": "@akaoio/tui",
   "version": "0.2.0",
-  "description": "",
+  "description": "Terminal UI framework for Node.js - Fork of Charsm by Sifundo Mhlungu",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -25,12 +25,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/SfundoMhlungu/charsm.git"
+    "url": "https://github.com/akaoio/tui.git"
   },
   "bugs": {
-    "url": "https://github.com/SfundoMhlungu/charsm/issues"
+    "url": "https://github.com/akaoio/tui/issues"
   },
-  "homepage": "https://github.com/SfundoMhlungu/charsm#README",
+  "homepage": "https://github.com/akaoio/tui#README",
+  "forkedFrom": "https://github.com/SfundoMhlungu/charsm",
+  "originalAuthor": "Sifundo Mhlungu <mhlungusk@gmail.com>",
   "devDependencies": {
     "@changesets/cli": "^2.27.9",
     "@types/ffi-napi": "^4.0.10",

@@ -3,11 +3,13 @@
 
 
 
-# Charsm
+# @akaoio/tui
 
-Charsm is a port of the gorgeous [Lipgloss](https://github.com/charmbracelet/lipgloss) library from Charm CLI, part of their impressive suite of CLI tools. Definitely check out Charm’s collection of [tools](https://charm.sh/); they’re fantastic.
+**@akaoio/tui** is a fork of [Charsm](https://github.com/SfundoMhlungu/charsm) by Sifundo Mhlungu, which is a port of the gorgeous [Lipgloss](https://github.com/charmbracelet/lipgloss) library from Charm CLI, part of their impressive suite of CLI tools. Definitely check out Charm's collection of [tools](https://charm.sh/); they're fantastic.
 
-I’m a huge fan of CLI tools and have been building a lot of them lately. Naturally, I want my CLIs to look amazing, which is exactly what Charm CLI tools achieve. Not wanting to Go without that same polish in JavaScript, I created Charsm! For details on how I ported Lipgloss using WebAssembly, see the **porting lipgloss with wasm** section below.
+> **Attribution**: This project is a fork of the original [Charsm](https://github.com/SfundoMhlungu/charsm) project by Sifundo Mhlungu. All credit for the initial WebAssembly port of Lipgloss goes to the original author.
+
+The original author is a huge fan of CLI tools and has been building a lot of them lately. Naturally, they wanted their CLIs to look amazing, which is exactly what Charm CLI tools achieve. Not wanting to Go without that same polish in JavaScript, they created Charsm, which we've now forked as @akaoio/tui for further customization! For details on how Lipgloss was ported using WebAssembly, see the **porting lipgloss with wasm** section below.
 
 If you’re looking to build beautiful TUIs, this library is for you!
 
@@ -16,7 +18,7 @@ If you’re looking to build beautiful TUIs, this library is for you!
 
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 
-- [Charsm](#charsm)
+- [@akaoio/tui](#akaoiotui)
    * [Installation](#installation)
    * [Getting Started](#getting-started)
       + [Initialization](#initialization)
@@ -31,8 +33,8 @@ If you’re looking to build beautiful TUIs, this library is for you!
    * [Plan](#plan)
    * [Contribution](#contribution)
    * [Notes on Building an Executable](#notes-on-building-an-executable)
-   * [Documentation: Bundling the Node Application with `charsm` WASM File](#documentation-bundling-the-node-application-with-charsm-wasm-file)
-      + [Step 1: Accessing the WASM File in `charsm`](#step-1-accessing-the-wasm-file-in-charsm)
+   * [Documentation: Bundling the Node Application with `@akaoio/tui` WASM File](#documentation-bundling-the-node-application-with-akaoiotui-wasm-file)
+      + [Step 1: Accessing the WASM File in `@akaoio/tui`](#step-1-accessing-the-wasm-file-in-akaoiotui)
       + [Step 2: Bundling with `pkg`](#step-2-bundling-with-pkg)
       + [Step 3: Bundling with `nexe`](#step-3-bundling-with-nexe)
       + [Step 4: Bundling with `electron-builder` (For Electron Apps)](#step-4-bundling-with-electron-builder-for-electron-apps)
@@ -40,14 +42,14 @@ If you’re looking to build beautiful TUIs, this library is for you!
 
 <!-- TOC end -->
 
-<!-- TOC --><a name="charsm"></a>
+<!-- TOC --><a name="akaoiotui"></a>
 
 ## Installation
 
 Install from npm with your favorite package manager:
 
 ```bash
-pnpm add charsm
+pnpm add @akaoio/tui
 ```
 ## Update v0.2.0
 
@@ -62,7 +64,7 @@ original charmcli huh [repo](https://github.com/charmbracelet/huh)
 ### Initialization
 
 ```js
-import {initLip, Lipgloss} from "charsm"
+import {initLip, Lipgloss} from "@akaoio/tui"
 
 (async function() {
     const isInit = await initLip(); // returns false if WASM fails to load, otherwise true
@@ -81,7 +83,7 @@ Once WASM is loaded, you can create a `Lipgloss` instance:
 
 ### Creating Styles
 
-At its core, Charsm lets you define styles similar to CSS, which can then be applied to text.
+At its core, @akaoio/tui lets you define styles similar to CSS, which can then be applied to text.
 
 ```js
 (async function() {
@@ -208,7 +210,7 @@ const c = lip.apply({ value: 'Charsmmm', id: "secondary" });
 
 ## Layout
 
-Charsm currently supports horizontal and vertical layouts.
+@akaoio/tui currently supports horizontal and vertical layouts.
 
 ```js
 const res = lip.join({ direction: "horizontal", elements: [a, b, c], position: "left" });
@@ -219,7 +221,7 @@ console.log(res);
 
 ## Creating Tables
 
-Charsm can create tables easily. Here’s an example:
+@akaoio/tui can create tables easily. Here’s an example:
 
 ```js
 const rows = [
@@ -413,7 +415,7 @@ I’ve got files everywhere, so I’ll need to clean it up once I find the time 
 
 ## Notes on Building an Executable
 
-To turn your Node application into an executable, make sure your build tool copies and bundles the WASM file in `charsm`’s `dist` folder.
+To turn your Node application into an executable, make sure your build tool copies and bundles the WASM file in `@akaoio/tui`’s `dist` folder.
 
 Since it’s read with `fs` (not imported), your bundler needs to know about this file:
 
@@ -424,15 +426,15 @@ const wasmfile = fs.readFileSync(wasmPath);
 
 **Disclaimer ⚠️:** This following instructions are generated by GPT, so I haven’t fully tested the bundling process yet, but I do use `pkg` to create an exe.
 
-## Documentation: Bundling the Node Application with `charsm` WASM File
+## Documentation: Bundling the Node Application with `@akaoio/tui` WASM File
 
-This guide covers how to bundle a Node.js application that uses the `charsm` library and its `lip.wasm` file into a standalone executable. We'll review setup for common tools like `pkg`, `nexe`, and `electron-builder`.
+This guide covers how to bundle a Node.js application that uses the `@akaoio/tui` library and its `lip.wasm` file into a standalone executable. We'll review setup for common tools like `pkg`, `nexe`, and `electron-builder`.
 
-### Step 1: Accessing the WASM File in `charsm`
+### Step 1: Accessing the WASM File in `@akaoio/tui`
 
 To bundle, you’ll need a dynamic reference to `lip.wasm` since its path will change in the executable.
 
-1. **Development Path:** Typically, `node_modules/charsm/dist/lip.wasm`.
+1. **Development Path:** Typically, `node_modules/@akaoio/tui/dist/lip.wasm`.
 2. **Bundled Path:** Dynamically reference the WASM file at runtime.
 
 
@@ -446,7 +448,7 @@ To include `lip.wasm`:
    {
      "pkg": {
        "assets": [
-         "node_modules/charsm/dist/lip.wasm"
+         "node_modules/@akaoio/tui/dist/lip.wasm"
        ]
      }
    }
@@ -455,7 +457,7 @@ To include `lip.wasm`:
 2. **Bundle the Application:**
 
    ```bash
-   pkg . --assets node_modules/charsm/dist/lip.wasm
+   pkg . --assets node_modules/@akaoio/tui/dist/lip.wasm
    ```
 
 ### Step 3: Bundling with `nexe`
@@ -463,13 +465,13 @@ To include `lip.wasm`:
 1. **Run `nexe` with Resource Flag:**
 
    ```bash
-   nexe -i index.js -o myApp.exe --resource node_modules/charsm/dist/lip.wasm
+   nexe -i index.js -o myApp.exe --resource node_modules/@akaoio/tui/dist/lip.wasm
    ```
 
 2. **Update Code for `process.cwd()`:**
 
    ```javascript
-   const wasmPath = path.join(process.cwd(), 'node_modules/charsm/dist/lip.wasm');
+   const wasmPath = path.join(process.cwd(), 'node_modules/@akaoio/tui/dist/lip.wasm');
    ```
 
 ### Step 4: Bundling with `electron-builder` (For Electron Apps)
@@ -480,7 +482,7 @@ To include `lip.wasm`:
    {
      "files": [
        "dist/**/*",
-       "node_modules/charsm/dist/lip.wasm"
+       "node_modules/@akaoio/tui/dist/lip.wasm"
      ]
    }
    ```
@@ -488,9 +490,9 @@ To include `lip.wasm`:
 2. **Reference with `__dirname`:**
 
    ```javascript
-   const wasmPath = path.join(__dirname, 'node_modules/charsm/dist/lip.wasm');
+   const wasmPath = path.join(__dirname, 'node_modules/@akaoio/tui/dist/lip.wasm');
    ```
 
 ### Conclusion
 
-Each bundling tool has a different configuration to include the `lip.wasm` file. Following these steps will ensure `charsm`’s WASM file is properly included in your executable.
+Each bundling tool has a different configuration to include the `lip.wasm` file. Following these steps will ensure `@akaoio/tui`’s WASM file is properly included in your executable.
