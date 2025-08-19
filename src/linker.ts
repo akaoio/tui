@@ -5,15 +5,21 @@ import * as ref from "@makeomatic/ref-napi"
 import { platform } from "os"
 import path from 'path';
 
-import { fileURLToPath } from 'url';
-
-let dir:string;
-
-
-if(__dirname){
-  dir = __dirname
-}else{
-  dir = path.dirname(fileURLToPath(import.meta.url))
+// Simple approach that works in both CJS and ESM
+let dir: string;
+try {
+  // Try to use __dirname if available (CommonJS)
+  // @ts-ignore
+  if (typeof __dirname !== 'undefined') {
+    // @ts-ignore
+    dir = __dirname;
+  } else {
+    // Fallback to finding the package directory
+    dir = path.dirname(require.resolve('@akaoio/tui/package.json'));
+  }
+} catch {
+  // Last resort fallback
+  dir = process.cwd();
 }
 
 // console.dir(Library)
