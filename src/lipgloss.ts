@@ -170,11 +170,17 @@ export async function initLip() {
 
 // Helper to check if WASM needs reinitialization
 export function checkWasmState(): boolean {
-    if (!goInstance || goInstance.exited) {
+    try {
+        if (!goInstance || goInstance.exited) {
+            isInitialized = false;
+            return false;
+        }
+        return isInitialized && 'createStyle' in globalThis;
+    } catch (error) {
+        // If any error checking state, assume we need to reinit
         isInitialized = false;
         return false;
     }
-    return isInitialized && 'createStyle' in globalThis;
 }
 
 // Reset WASM state (for testing)
@@ -253,15 +259,34 @@ interface simpleList {
 export class Lipgloss {
 
   private async ensureInitialized() {
-    if (!checkWasmState()) {
+    try {
+      if (!checkWasmState()) {
+        // Reset state before reinit
+        resetWasm();
+        await initLip();
+      }
+    } catch (error) {
+      // Silently handle in production/tests
+      // Try one more time after full reset
+      resetWasm();
       await initLip();
     }
   }
 
   async createStyle(style: style){
-      await this.ensureInitialized();
-      if ("createStyle" in globalThis){
-        (globalThis as any).createStyle(style)
+      try {
+        await this.ensureInitialized();
+        if ("createStyle" in globalThis){
+          (globalThis as any).createStyle(style)
+        }
+      } catch (error) {
+        // Silently handle error and try recovery
+        // Try to recover
+        resetWasm();
+        await initLip();
+        if ("createStyle" in globalThis){
+          (globalThis as any).createStyle(style)
+        }
       }
   }
   /**
@@ -270,12 +295,37 @@ export class Lipgloss {
    * @returns 
    */
   async apply(config: {value: string, id?: string}): Promise<string>{
-    await this.ensureInitialized();
-    if ("apply" in globalThis){
-     return (globalThis as any).apply(config)
+    try {
+      await this.ensureInitialized();
+      
+      // Sanitize input to prevent WASM crashes - more aggressive sanitization
+      const sanitizedValue = config.value ? 
+        config.value
+          .replace(/\0/g, '') // Remove null bytes
+          .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // Remove control chars except \t \n \r
+          : '';
+      
+      const sanitizedConfig = {
+        ...config,
+        value: sanitizedValue
+      };
+      
+      if ("apply" in globalThis){
+        try {
+          const result = (globalThis as any).apply(sanitizedConfig);
+          return result || config.value || "";
+        } catch (innerError) {
+          // If WASM fails, return original value
+          return config.value || "";
+        }
+      }
+    } catch (error) {
+      // Silently handle error
+      // Return the original value as fallback
+      return config.value || ""
     }
 
-    return ""
+    return config.value || ""
   }
 
   
@@ -285,42 +335,85 @@ export class Lipgloss {
 // 	elements: ['', ''],
 //  pc
 // })
-  join(config: {direction: direction, position:lipglosspos , elements: Array<string>, pc?: number} = {direction: "horizontal", position: "left", elements: ['']}) :string{
-   
-     if("join" in globalThis){
-      return  (globalThis as any).join(config)
+  async join(config: {direction: direction, position:lipglosspos , elements: Array<string>, pc?: number} = {direction: "horizontal", position: "left", elements: ['']}) :Promise<string>{
+     try {
+       await this.ensureInitialized();
+       
+       // Sanitize elements to prevent WASM crashes
+       const sanitizedConfig = {
+         ...config,
+         elements: config.elements.map(el => el ? el.replace(/\0/g, '') : '')
+       };
+       
+       if("join" in globalThis){
+         return  (globalThis as any).join(sanitizedConfig)
+       }
+     } catch (error) {
+       // Silently handle error
+       return config.elements.join('');
      }
 
      return ""
-
   }
   
   async newTable(config: table): Promise<string> {
-     await this.ensureInitialized();
-     if("newTable" in globalThis){
-        config.data = JSON.stringify(config.data) as any as tableData
-        return (globalThis as any).newTable(config)
+     try {
+       await this.ensureInitialized();
+       if("newTable" in globalThis){
+          // Sanitize table data
+          const sanitizedData = {
+            headers: config.data.headers.map(h => h ? h.replace(/\0/g, '') : ''),
+            rows: config.data.rows.map(row => 
+              row.map(cell => cell ? cell.replace(/\0/g, '') : '')
+            )
+          };
+          const sanitizedConfig = {...config, data: JSON.stringify(sanitizedData) as any as tableData};
+          return (globalThis as any).newTable(sanitizedConfig)
+       }
+     } catch (error) {
+       // Silently handle error
+       return "";
      }
     return ""
   }
 
 
   async RenderMD(content: string = "", style: markdownStyles = "dark"): Promise<string> {
-    await this.ensureInitialized();
-    if("RenderMD" in globalThis){
-     return  (globalThis as any).RenderMD(content, style)
+    try {
+      await this.ensureInitialized();
+      // Sanitize markdown content
+      const sanitizedContent = content ? content.replace(/\0/g, '') : '';
+      if("RenderMD" in globalThis){
+       return  (globalThis as any).RenderMD(sanitizedContent, style)
+      }
+    } catch (error) {
+      // Silently handle error
+      return content;
     }
 
     return ""
-
   }
 // console.log(List({data: JSON.stringify(["A", "B", 'C']), selected: JSON.stringify([]), styles: {numeratorColor: "99",itemColor: "212", marginRight: 4  }})
 
   async List(config: simpleList = {data: [], selected: [], listStyle: "asterisk", customEnum: "→", styles: {numeratorColor: "99", itemColor: "212", marginRight: 1}}):Promise<string>{
-    await this.ensureInitialized();
-    if("List" in globalThis){
-      return (globalThis as any).List({data: JSON.stringify(config.data),selected: JSON.stringify(config.selected), styles: config.styles, listStyle: config.listStyle, customEnum: config.customEnum})
-   }
+    try {
+      await this.ensureInitialized();
+      if("List" in globalThis){
+        // Sanitize list data
+        const sanitizedData = config.data.map(item => item ? item.replace(/\0/g, '') : '');
+        const sanitizedSelected = config.selected?.map(item => item ? item.replace(/\0/g, '') : '') || [];
+        return (globalThis as any).List({
+          data: JSON.stringify(sanitizedData),
+          selected: JSON.stringify(sanitizedSelected), 
+          styles: config.styles, 
+          listStyle: config.listStyle, 
+          customEnum: config.customEnum
+        })
+      }
+    } catch (error) {
+      // Silently handle error
+      return config.data.join('\n');
+    }
     return ""
   } 
 

@@ -14,7 +14,9 @@
     "test:watch": "npm run build && jest --watch",
     "test:coverage": "npm run build && jest --coverage",
     "test:verbose": "npm run build && DEBUG=1 jest --verbose",
-    "pretest": "npm run lint"
+    "pretest": "npm run lint",
+    "demo": "npm run build && node demo.js",
+    "demo:os": "npm run build && node demo-os.js"
   },
   "keywords": [
     "Tui",
