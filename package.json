@@ -1,12 +1,12 @@
 {
   "name": "@akaoio/tui",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Terminal UI framework for Node.js - Fork of Charsm by Sifundo Mhlungu",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-   "build": "tsup src/index.ts --format cjs,esm --dts && node -e \"require('fs').copyFileSync('src/lip.wasm', 'dist/lip.wasm')\" && node -e \"require('fs').cpSync('src/binary', 'dist/binary', { recursive: true })\"",
+    "build": "tsup src/index.ts --format cjs,esm --dts && node -e \"require('fs').copyFileSync('src/lip.wasm', 'dist/lip.wasm')\" && node -e \"require('fs').cpSync('src/binary', 'dist/binary', { recursive: true })\"",
     "lint": "tsc"
   },
   "keywords": [
