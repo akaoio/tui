@@ -8,18 +8,21 @@ import path from 'path';
 // Simple approach that works in both CJS and ESM
 let dir: string;
 try {
-  // Try to use __dirname if available (CommonJS)
   // @ts-ignore
   if (typeof __dirname !== 'undefined') {
     // @ts-ignore
     dir = __dirname;
   } else {
-    // Fallback to finding the package directory
-    dir = path.dirname(require.resolve('@akaoio/tui/package.json'));
+    // Try to resolve from package
+    try {
+      dir = path.dirname(require.resolve('@akaoio/tui/package.json'));
+    } catch {
+      // If package not found, use dist directory
+      dir = path.join(process.cwd(), 'dist');
+    }
   }
 } catch {
-  // Last resort fallback
-  dir = process.cwd();
+  dir = path.join(process.cwd(), 'dist');
 }
 
 // console.dir(Library)
@@ -98,16 +101,45 @@ type HuhT ={
 }
 
 const p = platform()
+const arch = process.arch; // Get architecture: 'x64', 'arm64', etc.
 
 let dynamicLib;
 if (p === 'win32') {
-    dynamicLib = './binary/huh.dll';
+    dynamicLib = 'binary/huh.dll';
 } else if (p === 'linux') {
-    dynamicLib = './binary/huh.so';
+    // Select the appropriate binary based on architecture
+    if (arch === 'arm64' || arch === 'arm') {
+        dynamicLib = 'binary/huh-arm64.so';
+    } else if (arch === 'x64' || arch === 'ia32') {
+        dynamicLib = 'binary/huh-x86-64.so';
+    } else {
+        // Fallback to generic name if architecture not explicitly supported
+        dynamicLib = 'binary/huh.so';
+    }
 } else {
     throw new Error(`Unsupported platform: ${p}. This application only supports Windows and Linux.`);
 }
-const dllfile = path.resolve(dir, dynamicLib);
+
+// Check if we're in dist or src directory
+const fs = require('fs');
+const possiblePaths = [
+    path.resolve(dir, dynamicLib),
+    path.resolve(dir, '..', 'dist', dynamicLib),
+    path.resolve(process.cwd(), 'dist', dynamicLib),
+    path.resolve(process.cwd(), 'src', dynamicLib)
+];
+
+let dllfile = '';
+for (const possiblePath of possiblePaths) {
+    if (fs.existsSync(possiblePath)) {
+        dllfile = possiblePath;
+        break;
+    }
+}
+
+if (!dllfile) {
+    throw new Error(`Could not find ${dynamicLib} in any expected location: ${possiblePaths.join(', ')}`);
+}
 
 
 const huh:HuhT  = Library(dllfile, {

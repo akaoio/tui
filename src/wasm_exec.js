@@ -74,11 +74,17 @@ const run = (() => {
 	}
 
 	if (!globalThis.crypto) {
-		throw new Error("globalThis.crypto is not available, polyfill required (crypto.getRandomValues only)");
+		// Polyfill crypto for Node.js environments
+		const crypto = require('crypto');
+		globalThis.crypto = {
+			getRandomValues: (arr) => crypto.randomFillSync(arr)
+		};
 	}
 
 	if (!globalThis.performance) {
-		throw new Error("globalThis.performance is not available, polyfill required (performance.now only)");
+		// Polyfill performance.now for Node.js environments
+		const { performance } = require('perf_hooks');
+		globalThis.performance = performance;
 	}
 
 	if (!globalThis.TextEncoder) {

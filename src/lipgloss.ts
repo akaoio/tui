@@ -87,54 +87,101 @@ import path from 'path';
 // Simple approach that works in both CJS and ESM
 let dir: string;
 try {
-  // Try to use __dirname if available (CommonJS)
   // @ts-ignore
   if (typeof __dirname !== 'undefined') {
     // @ts-ignore
     dir = __dirname;
   } else {
-    // Fallback to finding the package directory
-    dir = path.dirname(require.resolve('@akaoio/tui/package.json'));
+    // Try to resolve from package
+    try {
+      dir = path.dirname(require.resolve('@akaoio/tui/package.json'));
+    } catch {
+      // If package not found, use dist directory
+      dir = path.join(process.cwd(), 'dist');
+    }
   }
 } catch {
-  // Last resort fallback
-  dir = process.cwd();
+  dir = path.join(process.cwd(), 'dist');
 }
 
+let wasmInstance: WebAssembly.Instance | null = null;
+let goInstance: any = null;
+let isInitialized = false;
+
 export async function initLip() {
+    // Check if already initialized and working
+    if (isInitialized && 'createStyle' in globalThis) {
+        return true;
+    }
+
     // Import wasm_exec.js and initialize Go environment
     const wasmExec = await import('./wasm_exec');
     wasmExec.default();
 
-
-
     if (!(globalThis as any).Go) {
       throw new Error("Failed to initialize Go from wasm_exec.js");
-  }
+    }
+    
     // Create a new Go instance
-    const go =new (globalThis as any).Go();
+    goInstance = new (globalThis as any).Go();
 
     // Ensure path to the wasm file is correct
-    const wasmPath = path.resolve(dir, './lip.wasm');
+    const possibleWasmPaths = [
+        path.resolve(dir, 'lip.wasm'),
+        path.resolve(dir, '..', 'dist', 'lip.wasm'),
+        path.resolve(process.cwd(), 'dist', 'lip.wasm'),
+        path.resolve(process.cwd(), 'src', 'lip.wasm')
+    ];
+    
+    let wasmPath = '';
+    for (const possiblePath of possibleWasmPaths) {
+        if (fs.existsSync(possiblePath)) {
+            wasmPath = possiblePath;
+            break;
+        }
+    }
+    
+    if (!wasmPath) {
+        throw new Error(`Could not find lip.wasm in any expected location: ${possibleWasmPaths.join(', ')}`);
+    }
+    
     const wasmfile = fs.readFileSync(wasmPath);
 
     // Instantiate the WebAssembly module
-    const res = await WebAssembly.instantiate(wasmfile, go.importObject);
+    const res = await WebAssembly.instantiate(wasmfile, goInstance.importObject);
 
     if (res) {
+        wasmInstance = res.instance;
         // Run the Go WASM instance
-        go.run(res.instance);
+        goInstance.run(wasmInstance);
 
         // Check if the WASM module initialized correctly
         if (!('createStyle' in globalThis)) {
             throw new Error("Failed to init wasm");
         }
 
+        isInitialized = true;
         // console.log("WASM loaded successfully");
         return true;
     }
 
     return false;
+}
+
+// Helper to check if WASM needs reinitialization
+export function checkWasmState(): boolean {
+    if (!goInstance || goInstance.exited) {
+        isInitialized = false;
+        return false;
+    }
+    return isInitialized && 'createStyle' in globalThis;
+}
+
+// Reset WASM state (for testing)
+export function resetWasm() {
+    wasmInstance = null;
+    goInstance = null;
+    isInitialized = false;
 }
  
 
@@ -205,8 +252,14 @@ interface simpleList {
 }
 export class Lipgloss {
 
+  private async ensureInitialized() {
+    if (!checkWasmState()) {
+      await initLip();
+    }
+  }
 
-  createStyle(style: style){
+  async createStyle(style: style){
+      await this.ensureInitialized();
       if ("createStyle" in globalThis){
         (globalThis as any).createStyle(style)
       }
@@ -216,7 +269,8 @@ export class Lipgloss {
    * @param config value to render and an optional id for a specific style, if no id is provided the recently created style is applied
    * @returns 
    */
-  apply(config: {value: string, id?: string}): string{
+  async apply(config: {value: string, id?: string}): Promise<string>{
+    await this.ensureInitialized();
     if ("apply" in globalThis){
      return (globalThis as any).apply(config)
     }
@@ -241,7 +295,8 @@ export class Lipgloss {
 
   }
   
-  newTable(config: table): string {
+  async newTable(config: table): Promise<string> {
+     await this.ensureInitialized();
      if("newTable" in globalThis){
         config.data = JSON.stringify(config.data) as any as tableData
         return (globalThis as any).newTable(config)
@@ -250,7 +305,8 @@ export class Lipgloss {
   }
 
 
-  RenderMD(content: string = "", style: markdownStyles = "dark"): string {
+  async RenderMD(content: string = "", style: markdownStyles = "dark"): Promise<string> {
+    await this.ensureInitialized();
     if("RenderMD" in globalThis){
      return  (globalThis as any).RenderMD(content, style)
     }
@@ -260,9 +316,9 @@ export class Lipgloss {
   }
 // console.log(List({data: JSON.stringify(["A", "B", 'C']), selected: JSON.stringify([]), styles: {numeratorColor: "99",itemColor: "212", marginRight: 4  }})
 
-  List(config: simpleList = {data: [], selected: [], listStyle: "asterisk", customEnum: "→", styles: {numeratorColor: "99", itemColor: "212", marginRight: 1}}):string{
-
-   if("List" in globalThis){
+  async List(config: simpleList = {data: [], selected: [], listStyle: "asterisk", customEnum: "→", styles: {numeratorColor: "99", itemColor: "212", marginRight: 1}}):Promise<string>{
+    await this.ensureInitialized();
+    if("List" in globalThis){
       return (globalThis as any).List({data: JSON.stringify(config.data),selected: JSON.stringify(config.selected), styles: config.styles, listStyle: config.listStyle, customEnum: config.customEnum})
    }
     return ""

@@ -3,4 +3,11 @@ dist
 example
 copywasm.bat
 d.md
+coverage
+*.log
+.DS_Store
+*.swp
+*.swo
+.vscode
+.idea
 
