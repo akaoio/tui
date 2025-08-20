@@ -1,6 +1,6 @@
 {
   "name": "@akaoio/tui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple and practical Terminal UI framework for Node.js",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -21,8 +21,7 @@
     "test:coverage": "jest --coverage",
     "example:simple": "tsx examples/simple.ts",
     "example:form": "tsx examples/form.ts",
-    "example:components": "tsx examples/components.ts",
-    "prepublishOnly": "npm run build && npm run test"
+    "example:components": "tsx examples/components.ts"
   },
   "keywords": [
     "tui",
