@@ -67,7 +67,15 @@ export function color(fg?: Color | string, bg?: BgColor | string): string {
   
   if (fg !== undefined) {
     if (typeof fg === 'string') {
-      result += fg.startsWith('#') ? hex(fg) : fg;
+      // Check if it's already an ANSI escape sequence
+      if (fg.startsWith('\x1b[')) {
+        result += fg;
+      } else if (fg.startsWith('#')) {
+        result += hex(fg);
+      } else {
+        // It might be a raw color string, skip it to avoid infinite loops
+        result += '';
+      }
     } else {
       result += `\x1b[${fg}m`;
     }
@@ -75,7 +83,15 @@ export function color(fg?: Color | string, bg?: BgColor | string): string {
   
   if (bg !== undefined) {
     if (typeof bg === 'string') {
-      result += bg.startsWith('#') ? bgHex(bg) : bg;
+      // Check if it's already an ANSI escape sequence
+      if (bg.startsWith('\x1b[')) {
+        result += bg;
+      } else if (bg.startsWith('#')) {
+        result += bgHex(bg);
+      } else {
+        // It might be a raw color string, skip it to avoid infinite loops
+        result += '';
+      }
     } else {
       result += `\x1b[${bg}m`;
     }

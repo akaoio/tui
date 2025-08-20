@@ -1,98 +1,139 @@
 import { Screen } from './core/screen'
 import { Keyboard } from './core/keyboard'
-import { Input } from './components/Input'
-import { Select } from './components/Select'
-import { Checkbox } from './components/Checkbox'
-import { ProgressBar } from './components/ProgressBar'
-import { Spinner } from './components/Spinner'
+import { RenderMode } from './core/RenderMode'
 import { bold, dim } from './utils/styles'
-import { drawBox, BoxStyles } from './utils/styles'
 import { reset } from './utils/colors'
 import * as readline from 'readline'
+
+// Import stream components
+import {
+    StreamInput,
+    StreamSelect,
+    StreamCheckbox,
+    StreamRadio,
+    StreamProgressBar,
+    StreamSpinner
+} from './components/StreamComponents'
 
 export interface TUIOptions {
     title?: string
     screen?: Screen
     keyboard?: Keyboard
+    renderMode?: RenderMode
 }
 
-export interface StatusItem {
-    label: string
-    value: string
-    status?: 'success' | 'warning' | 'error' | 'info'
-}
-
-/**
- * High-level Terminal UI helper for building CLI applications
- * Provides convenient methods for common terminal UI patterns
- */
 export class TUI {
+    private title: string
     private screen: Screen
     private keyboard: Keyboard
-    private title: string
+    private renderMode: RenderMode
     
     constructor(options: TUIOptions = {}) {
         this.title = options.title || ''
         this.screen = options.screen || new Screen()
         this.keyboard = options.keyboard || new Keyboard()
+        this.renderMode = options.renderMode || RenderMode.STREAM
+    }
+    
+    /**
+     * Set render mode
+     */
+    setRenderMode(mode: RenderMode): void {
+        this.renderMode = mode
+    }
+    
+    /**
+     * Get current render mode
+     */
+    getRenderMode(): RenderMode {
+        return this.renderMode
+    }
+    
+    /**
+     * Check if in stream mode
+     */
+    isStreamMode(): boolean {
+        return this.renderMode === RenderMode.STREAM || this.renderMode === RenderMode.AUTO
+    }
+    
+    /**
+     * Check if in absolute mode
+     */
+    isAbsoluteMode(): boolean {
+        return this.renderMode === RenderMode.ABSOLUTE
     }
     
     /**
      * Clear the entire screen
      */
     clear(): void {
-        this.screen.clear()
-    }
-    
-    /**
-     * Create a styled header with title
-     */
-    createHeader(): string {
-        const width = Math.min(this.screen.getWidth() - 2, 60)
-        const isCompact = this.screen.getWidth() < 80
-        
-        if (isCompact) {
-            const line = '═'.repeat(width)
-            return `\x1b[36m${bold(line)}${reset()}\n` +
-                   `\x1b[36m${bold(`  ${this.title}`)}${reset()}\n` +
-                   `\x1b[36m${bold(line)}${reset()}`
+        if (this.isStreamMode()) {
+            // In stream mode, just add some newlines for clarity
+            console.log('\n'.repeat(3))
         } else {
-            const lines = drawBox(width, 3, BoxStyles.Double)
-            const padding = Math.floor((width - this.title.length - 2) / 2)
-            const titleLine = '║' + ' '.repeat(padding) + this.title + ' '.repeat(width - padding - this.title.length - 2) + '║'
-            
-            return `\x1b[36m${bold(lines[0])}${reset()}\n` +
-                   `\x1b[36m${bold(titleLine)}${reset()}\n` +
-                   `\x1b[36m${bold(lines[2])}${reset()}`
+            // In absolute mode, clear the screen
+            this.screen.clear()
         }
     }
     
     /**
-     * Create a status section with items
+     * Create a header with title
      */
-    createStatusSection(title: string, items: StatusItem[]): string {
+    createHeader(): string {
+        const width = 62
+        const titleWidth = this.title.length
+        const padding = Math.floor((width - titleWidth - 2) / 2)
+        const paddedTitle = ' '.repeat(padding) + this.title + ' '.repeat(width - padding - titleWidth - 2)
+        
+        const top = '\x1b[36m\x1b[1m╔' + '═'.repeat(width - 2) + '╗\x1b[22m\x1b[0m'
+        const middle = '\x1b[36m\x1b[1m║' + paddedTitle + '║\x1b[22m\x1b[0m'
+        const bottom = '\x1b[36m\x1b[1m╚' + '═'.repeat(width - 2) + '╝\x1b[22m\x1b[0m'
+        
+        return [top, middle, bottom].join('\n')
+    }
+    
+    /**
+     * Create a status section
+     */
+    createStatusSection(title: string, items: Array<{
+        label: string
+        value: string
+        status?: 'info' | 'success' | 'warning' | 'error'
+    }>, isCompact = false): string {
         const lines: string[] = []
         
-        lines.push(`\n\x1b[35m${bold(`▶ ${title}`)}${reset()}`)
-        lines.push(`\x1b[35m  ${'─'.repeat(title.length)}${reset()}\n`)
+        // Title
+        lines.push('')
+        lines.push(`\x1b[35m${bold('> ' + title)}\x1b[0m`)
+        lines.push(`\x1b[35m  ${'─'.repeat(title.length + 2)}\x1b[0m`)
+        lines.push('')
         
+        // Items
         items.forEach(item => {
-            const statusColor = item.status ? {
-                success: '\x1b[32m',
-                warning: '\x1b[33m',
-                error: '\x1b[31m',
-                info: '\x1b[36m'
-            }[item.status] : ''
+            let iconStr = ''
+            let statusColor = ''
             
-            const icon = item.status ? {
-                success: '✓',
-                warning: '⚠',
-                error: '✗',
-                info: 'ℹ'
-            }[item.status] : ''
-            
-            const iconStr = icon ? `${statusColor}${bold(icon)} ${reset()}` : ''
-            const isCompact = this.screen.getWidth() < 80 || item.label.length + item.value.length > 50
+            switch (item.status) {
+                case 'info':
+                    iconStr = '\x1b[36m\x1b[1m[i]\x1b[22m \x1b[0m'
+                    statusColor = '\x1b[36m'
+                    break
+                case 'success':
+                    iconStr = '\x1b[32m\x1b[1m[OK]\x1b[22m \x1b[0m'
+                    statusColor = '\x1b[32m'
+                    break
+                case 'warning':
+                    iconStr = '\x1b[33m\x1b[1m[!]\x1b[22m \x1b[0m'
+                    statusColor = '\x1b[33m'
+                    break
+                case 'error':
+                    iconStr = '\x1b[31m\x1b[1m[X]\x1b[22m \x1b[0m'
+                    statusColor = '\x1b[31m'
+                    break
+                default:
+                    iconStr = '  '
+                    statusColor = ''
+            }
             
             if (isCompact) {
                 lines.push(`${iconStr}${statusColor}${item.label}: ${item.value}${reset()}`)
@@ -109,83 +150,61 @@ export class TUI {
      * Prompt for text input
      */
     async prompt(label: string, defaultValue = '', password = false): Promise<string> {
-        const input = new Input(this.screen, this.keyboard, {
-            placeholder: label,
-            value: defaultValue,
-            password
-        })
-        
-        return new Promise((resolve) => {
-            input.on('submit', (value) => {
-                input.clear()
-                this.keyboard.stop()
-                resolve(value as string)
-            })
-            
-            this.keyboard.start()
-            input.focus()
-            input.render()
-        })
+        if (this.isStreamMode()) {
+            const input = new StreamInput()
+            const prompt = password ? `${label} (hidden): ` : `${label}: `
+            return await input.render(prompt, defaultValue)
+        } else {
+            // Use absolute mode Input component
+            // This would use the new Input.new component
+            throw new Error('Absolute mode prompt not yet implemented')
+        }
     }
     
     /**
-     * Select from a list of options
+     * Select from options
      */
     async select(label: string, options: string[], defaultIndex = 0): Promise<string> {
-        const select = new Select(this.screen, this.keyboard, {
-            options: options.map(opt => ({ label: opt, value: opt })),
-            selected: defaultIndex
-        })
-        
-        return new Promise((resolve) => {
-            select.on('submit', (value) => {
-                select.clear()
-                this.keyboard.stop()
-                resolve(value as string)
-            })
-            
-            this.keyboard.start()
-            select.focus()
-            select.render()
-        })
+        if (this.isStreamMode()) {
+            const select = new StreamSelect(options)
+            return await select.render(label)
+        } else {
+            // Use absolute mode Select component
+            throw new Error('Absolute mode select not yet implemented')
+        }
     }
     
     /**
-     * Confirm with yes/no
+     * Confirm with yes/no - already fixed to use readline
      */
     async confirm(label: string, defaultValue = false): Promise<boolean> {
-        const rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout
-        })
-        
-        return new Promise((resolve) => {
-            const defaultStr = defaultValue ? 'Y/n' : 'y/N'
-            const prompt = `${label} [${defaultStr}] `
-            
-            rl.question(prompt, (answer) => {
-                rl.close()
-                
-                const normalized = answer.toLowerCase().trim()
-                if (normalized === '') {
-                    resolve(defaultValue)
-                } else if (normalized === 'y' || normalized === 'yes') {
-                    resolve(true)
-                } else if (normalized === 'n' || normalized === 'no') {
-                    resolve(false)
-                } else {
-                    // Invalid input, use default
-                    resolve(defaultValue)
-                }
-            })
-        })
+        if (this.isStreamMode()) {
+            const checkbox = new StreamCheckbox()
+            return await checkbox.render(label, defaultValue)
+        } else {
+            // For absolute mode, could use a different approach
+            const checkbox = new StreamCheckbox()
+            return await checkbox.render(label, defaultValue)
+        }
+    }
+    
+    /**
+     * Radio button selection
+     */
+    async radio(label: string, options: string[], defaultIndex = 0): Promise<string> {
+        if (this.isStreamMode()) {
+            const radio = new StreamRadio(options, defaultIndex)
+            return await radio.render(label)
+        } else {
+            throw new Error('Absolute mode radio not yet implemented')
+        }
     }
     
     /**
      * Show error message
      */
     showError(message: string, details?: string): void {
-        console.log(`\n\x1b[31m${bold('✗ Error:')}${reset()} ${message}`)
+        console.log(`\n\x1b[31m${bold('[X] Error:')}${reset()} ${message}`)
         if (details) {
             console.log(`  ${dim(details)}`)
         }
@@ -195,44 +214,37 @@ export class TUI {
      * Show success message
      */
     showSuccess(message: string): void {
-        console.log(`\n\x1b[32m${bold('✓ Success:')}${reset()} ${message}`)
+        console.log(`\n\x1b[32m${bold('[OK] Success:')}${reset()} ${message}`)
     }
     
     /**
      * Show warning message
      */
     showWarning(message: string): void {
-        console.log(`\n\x1b[33m${bold('⚠ Warning:')}${reset()} ${message}`)
+        console.log(`\n\x1b[33m${bold('[!] Warning:')}${reset()} ${message}`)
     }
     
     /**
      * Show info message
      */
     showInfo(message: string): void {
-        console.log(`\n\x1b[36mℹ Info:${reset()} ${message}`)
+        console.log(`\n\x1b[36m[i] Info:${reset()} ${message}`)
     }
     
     /**
      * Show progress bar
      */
-    showProgress(label: string, current: number, total: number): void {
-        const progress = new ProgressBar(this.screen, this.keyboard, {
-            total,
-            width: Math.min(40, this.screen.getWidth() - 20)
-        })
-        progress.setValue(current)
-        progress.render()
-        
-        if (current >= total) {
-            process.stdout.write('\n')
-        }
+    showProgress(label: string, current: number, total: number): StreamProgressBar {
+        const progress = new StreamProgressBar(label, total)
+        progress.update(current)
+        return progress
     }
     
     /**
      * Create a spinner for loading operations
      */
-    createSpinner(text: string): Spinner {
-        return new Spinner(this.screen, this.keyboard, { text })
+    createSpinner(text: string): StreamSpinner {
+        return new StreamSpinner(text)
     }
     
     /**

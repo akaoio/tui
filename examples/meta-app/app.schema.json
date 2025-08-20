@@ -1,0 +1,333 @@
+{
+  "$id": "todo-app",
+  "$type": "app",
+  "$version": "1.0.0",
+  "$reactive": true,
+  
+  "name": "Todo App",
+  "version": "1.0.0",
+  "description": "A fully reactive todo app defined entirely by schema",
+  
+  "config": {
+    "theme": "dark",
+    "locale": "en",
+    "plugins": ["keyboard", "mouse", "storage"]
+  },
+  
+  "store": {
+    "$type": "state",
+    "$reactive": true,
+    
+    "properties": {
+      "todos": {
+        "type": "array",
+        "default": [],
+        "reactive": true
+      },
+      "filter": {
+        "type": "string",
+        "default": "all",
+        "reactive": true
+      },
+      "searchQuery": {
+        "type": "string",
+        "default": "",
+        "reactive": true
+      }
+    },
+    
+    "getters": {
+      "filteredTodos": {
+        "handler": "function() { return this.state.todos.filter(t => this.state.filter === 'all' || (this.state.filter === 'active' ? !t.completed : t.completed)) }",
+        "cache": true
+      },
+      "todoCount": {
+        "handler": "function() { return this.state.todos.length }",
+        "cache": true
+      },
+      "completedCount": {
+        "handler": "function() { return this.state.todos.filter(t => t.completed).length }",
+        "cache": true
+      }
+    },
+    
+    "mutations": {
+      "ADD_TODO": {
+        "handler": "function(state, todo) { state.todos.push(todo) }"
+      },
+      "REMOVE_TODO": {
+        "handler": "function(state, id) { const index = state.todos.findIndex(t => t.id === id); if (index > -1) state.todos.splice(index, 1) }"
+      },
+      "TOGGLE_TODO": {
+        "handler": "function(state, id) { const todo = state.todos.find(t => t.id === id); if (todo) todo.completed = !todo.completed }"
+      },
+      "SET_FILTER": {
+        "handler": "function(state, filter) { state.filter = filter }"
+      }
+    },
+    
+    "actions": {
+      "addTodo": {
+        "handler": "function({ commit }, text) { const todo = { id: Date.now(), text, completed: false, createdAt: new Date() }; commit('ADD_TODO', todo) }",
+        "async": false
+      },
+      "removeTodo": {
+        "handler": "function({ commit }, id) { commit('REMOVE_TODO', id) }",
+        "async": false
+      },
+      "toggleTodo": {
+        "handler": "function({ commit }, id) { commit('TOGGLE_TODO', id) }",
+        "async": false
+      }
+    },
+    
+    "persist": {
+      "key": "todos",
+      "storage": "file"
+    }
+  },
+  
+  "components": {
+    "Header": {
+      "$id": "header",
+      "$type": "component",
+      "$reactive": true,
+      
+      "name": "Header",
+      "type": "custom",
+      
+      "props": {
+        "title": {
+          "type": "string",
+          "default": "Todo App"
+        }
+      },
+      
+      "computed": {
+        "stats": "function() { return `${this.$store.getters.completedCount}/${this.$store.getters.todoCount}` }"
+      },
+      
+      "style": {
+        "background": "#0066cc",
+        "color": "white",
+        "padding": [1, 2],
+        "position": "relative",
+        "height": 3
+      },
+      
+      "template": "{{ title }} - {{ stats }}"
+    },
+    
+    "TodoList": {
+      "$id": "todo-list",
+      "$type": "component",
+      "$reactive": true,
+      
+      "name": "TodoList",
+      "type": "list",
+      
+      "computed": {
+        "items": "function() { return this.$store.getters.filteredTodos }"
+      },
+      
+      "methods": {
+        "toggleTodo": "function(id) { this.$store.dispatch('toggleTodo', id) }",
+        "removeTodo": "function(id) { this.$store.dispatch('removeTodo', id) }"
+      },
+      
+      "style": {
+        "border": {
+          "style": "single",
+          "color": "#666"
+        },
+        "padding": 1,
+        "height": {
+          "$compute": "function() { return Math.min(20, this.items.length + 2) }"
+        }
+      },
+      
+      "events": {
+        "definitions": {
+          "select": {
+            "payload": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "number" },
+                "todo": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+    
+    "TodoInput": {
+      "$id": "todo-input",
+      "$type": "component",
+      "$reactive": true,
+      
+      "name": "TodoInput",
+      "type": "text",
+      
+      "state": {
+        "properties": {
+          "value": {
+            "type": "string",
+            "default": "",
+            "reactive": true
+          }
+        }
+      },
+      
+      "model": {
+        "prop": "value",
+        "event": "input"
+      },
+      
+      "methods": {
+        "addTodo": "function() { if (this.state.value.trim()) { this.$store.dispatch('addTodo', this.state.value); this.state.value = '' } }"
+      },
+      
+      "handlers": {
+        "onEnter": "this.addTodo"
+      },
+      
+      "style": {
+        "border": {
+          "style": "single",
+          "color": "#0066cc"
+        },
+        "padding": [0, 1],
+        "height": 3,
+        "focus": {
+          "border": {
+            "color": "#00ff00"
+          }
+        }
+      },
+      
+      "props": {
+        "placeholder": {
+          "type": "string",
+          "default": "What needs to be done?"
+        }
+      }
+    },
+    
+    "FilterBar": {
+      "$id": "filter-bar",
+      "$type": "component",
+      "$reactive": true,
+      
+      "name": "FilterBar",
+      "type": "custom",
+      
+      "computed": {
+        "activeFilter": "function() { return this.$store.state.filter }"
+      },
+      
+      "methods": {
+        "setFilter": "function(filter) { this.$store.commit('SET_FILTER', filter) }"
+      },
+      
+      "style": {
+        "padding": [1, 2],
+        "background": "#f0f0f0",
+        "display": "flex",
+        "flexDirection": "row",
+        "justifyContent": "space-between"
+      },
+      
+      "children": [
+        {
+          "$type": "component",
+          "type": "button",
+          "props": {
+            "label": "All",
+            "active": {
+              "$compute": "function() { return this.parent.activeFilter === 'all' }"
+            }
+          },
+          "handlers": {
+            "onClick": "function() { this.parent.setFilter('all') }"
+          }
+        },
+        {
+          "$type": "component",
+          "type": "button",
+          "props": {
+            "label": "Active",
+            "active": {
+              "$compute": "function() { return this.parent.activeFilter === 'active' }"
+            }
+          },
+          "handlers": {
+            "onClick": "function() { this.parent.setFilter('active') }"
+          }
+        },
+        {
+          "$type": "component",
+          "type": "button",
+          "props": {
+            "label": "Completed",
+            "active": {
+              "$compute": "function() { return this.parent.activeFilter === 'completed' }"
+            }
+          },
+          "handlers": {
+            "onClick": "function() { this.parent.setFilter('completed') }"
+          }
+        }
+      ]
+    }
+  },
+  
+  "screens": {
+    "main": {
+      "$id": "main-screen",
+      "$type": "component",
+      
+      "layout": {
+        "$type": "layout",
+        "type": "dock",
+        "dock": {
+          "top": "Header",
+          "center": {
+            "$type": "layout",
+            "type": "stack",
+            "children": [
+              "TodoInput",
+              "TodoList"
+            ]
+          },
+          "bottom": "FilterBar"
+        }
+      },
+      
+      "$lifecycle": {
+        "mounted": "function() { console.log('App mounted') }",
+        "unmounted": "function() { console.log('App unmounted') }"
+      },
+      
+      "$watch": {
+        "store.state.todos": {
+          "handler": "function(newTodos, oldTodos) { console.log('Todos changed:', newTodos.length) }",
+          "deep": true
+        }
+      }
+    }
+  },
+  
+  "main": "main-screen",
+  
+  "router": {
+    "mode": "memory",
+    "routes": [
+      {
+        "path": "/",
+        "name": "home",
+        "component": "main-screen"
+      }
+    ]
+  }
+}

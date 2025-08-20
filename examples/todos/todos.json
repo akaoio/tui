@@ -1,0 +1,23 @@
+[
+  {
+    "id": "1",
+    "title": "Build a modern TUI framework",
+    "completed": true,
+    "priority": "high",
+    "createdAt": "2025-08-20T09:43:05.321Z"
+  },
+  {
+    "id": "2",
+    "title": "Create smooth terminal UX",
+    "completed": true,
+    "priority": "high",
+    "createdAt": "2025-08-20T09:43:05.321Z"
+  },
+  {
+    "id": "3",
+    "title": "Add component system",
+    "completed": false,
+    "priority": "medium",
+    "createdAt": "2025-08-20T09:43:05.321Z"
+  }
+]
