@@ -85,7 +85,7 @@ export class Radio extends Component {
     });
   }
 
-  handleKey(key: Key, event: KeyEvent): void {
+  handleKey(key: Key, _event: KeyEvent): void {
     if (!this.focused) return;
 
     switch (key) {

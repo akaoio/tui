@@ -1,7 +1,7 @@
 import { Component, ComponentOptions } from './Component';
 import { Screen } from '../core/screen';
 import { Keyboard, Key, KeyEvent } from '../core/keyboard';
-import { Color, color, reset, BgColor } from '../utils/colors';
+import { Color, color, reset } from '../utils/colors';
 
 export interface ProgressBarOptions extends ComponentOptions {
   total: number;
@@ -12,7 +12,6 @@ export interface ProgressBarOptions extends ComponentOptions {
   completeChar?: string;
   incompleteChar?: string;
   barColor?: Color;
-  bgColor?: BgColor;
 }
 
 export class ProgressBar extends Component {
@@ -24,7 +23,6 @@ export class ProgressBar extends Component {
   private completeChar: string;
   private incompleteChar: string;
   private barColor: Color;
-  private bgColor: BgColor;
 
   constructor(screen: Screen, keyboard: Keyboard, options: ProgressBarOptions) {
     super(screen, keyboard, options);
@@ -36,7 +34,6 @@ export class ProgressBar extends Component {
     this.completeChar = options.completeChar || '█';
     this.incompleteChar = options.incompleteChar || '░';
     this.barColor = options.barColor || Color.Green;
-    this.bgColor = options.bgColor || BgColor.Default;
     this.value = this.getPercentage();
   }
 
@@ -68,7 +65,7 @@ export class ProgressBar extends Component {
     this.screen.writeAt(this.x, this.y, output);
   }
 
-  handleKey(key: Key, event: KeyEvent): void {
+  handleKey(_key: Key, _event: KeyEvent): void {
     // ProgressBar doesn't handle keyboard input
   }
 

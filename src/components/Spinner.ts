@@ -31,7 +31,7 @@ export class Spinner extends Component {
   }
 
   private getFrames(style: string): string[] {
-    const styles: { [key: string]: string[] } = {
+    const styles: Record<string, string[]> = {
       dots: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'],
       line: ['-', '\\', '|', '/'],
       circle: ['◜', '◠', '◝', '◞', '◡', '◟'],
@@ -40,7 +40,7 @@ export class Spinner extends Component {
       pulse: ['⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷'],
     };
     
-    return styles[style] || styles.dots;
+    return styles[style] ?? styles.dots;
   }
 
   render(): void {
@@ -125,13 +125,13 @@ export class Spinner extends Component {
     this.render();
   }
 
-  handleKey(key: Key, event: KeyEvent): void {
+  handleKey(_key: Key, _event: KeyEvent): void {
     // Spinner doesn't handle keyboard input
   }
 
-  clear(): void {
+  override clear(): void {
     if (!this.visible) return;
-    const clearLength = this.frames[0].length + (this.text ? this.text.length + 1 : 0) + 2;
+    const clearLength = (this.frames[0]?.length || 1) + (this.text ? this.text.length + 1 : 0) + 2;
     this.screen.writeAt(this.x, this.y, ' '.repeat(clearLength));
   }
 }

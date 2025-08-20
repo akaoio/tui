@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events';
 import { Screen } from '../core/screen';
-import { Keyboard, Key, KeyEvent } from '../core/keyboard';
+import { Keyboard, Key } from '../core/keyboard';
 import { Component } from './Component';
-import { Color, color, reset } from '../utils/colors';
+import { Color, BgColor, color, reset } from '../utils/colors';
 import { BoxStyles, drawBox } from '../utils/styles';
 
 export interface FormOptions {
@@ -88,7 +88,7 @@ export class Form extends EventEmitter {
       }
     });
     
-    this.keyboard.onChar((char, event) => {
+    this.keyboard.onChar((_char, event) => {
       if (!this.isActive) return;
       const currentComponent = this.components[this.currentIndex];
       currentComponent?.handleKey(Key.ENTER, event);
@@ -117,7 +117,7 @@ export class Form extends EventEmitter {
     
     // Position and render components
     let currentY = this.y + 2;
-    this.components.forEach((component, index) => {
+    this.components.forEach((component) => {
       component.setPosition(this.x + 2, currentY);
       component.render();
       currentY += component.isVisible() ? 2 : 0;
@@ -193,7 +193,7 @@ export class Form extends EventEmitter {
     }
   }
 
-  private submit(): void {
+  private _submit(): void {
     const values: { [key: string]: any } = {};
     this.components.forEach((component, index) => {
       values[`field_${index}`] = component.getValue();

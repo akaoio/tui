@@ -143,7 +143,7 @@ export class Select extends Component {
     return str.replace(/\x1b\[[0-9;]*m/g, '');
   }
 
-  handleKey(key: Key, event: KeyEvent): void {
+  handleKey(key: Key, _event: KeyEvent): void {
     if (!this.focused) return;
 
     switch (key) {
@@ -267,7 +267,7 @@ export class Select extends Component {
     }
   }
 
-  clear(): void {
+  override clear(): void {
     for (let i = 0; i < this.height; i++) {
       this.screen.writeAt(this.x, this.y + i, ' '.repeat(this.width || 30));
     }
@@ -289,7 +289,9 @@ export class Select extends Component {
 
   getSelectedOptions(): SelectOption[] {
     if (this.multiple) {
-      return Array.from(this.selectedIndices).map(i => this.options[i]).filter(Boolean);
+      return Array.from(this.selectedIndices)
+        .map(i => this.options[i])
+        .filter((option): option is SelectOption => option !== undefined);
     }
     const option = this.getSelectedOption();
     return option ? [option] : [];

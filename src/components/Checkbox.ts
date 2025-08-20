@@ -40,7 +40,7 @@ export class Checkbox extends Component {
     this.screen.writeAt(this.x, this.y, text);
   }
 
-  handleKey(key: Key, event: KeyEvent): void {
+  handleKey(key: Key, _event: KeyEvent): void {
     if (!this.focused || this.disabled) return;
 
     if (key === Key.SPACE || key === Key.ENTER) {
