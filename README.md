@@ -1,33 +1,48 @@
 # @akaoio/tui
 
-Simple and practical Terminal UI framework for Node.js applications. Build interactive command-line interfaces with ease.
+A modern, lightweight Terminal UI framework for Node.js applications. Build beautiful command-line interfaces with keyboard navigation, forms, and interactive components.
 
-## Features
+[![npm version](https://badge.fury.io/js/@akaoio%2Ftui.svg)](https://www.npmjs.com/package/@akaoio/tui)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-- 🎯 **Simple API** - Easy to learn and use
-- ⌨️ **Full keyboard navigation** - Arrow keys, Tab, Enter, Escape, etc.
-- 📦 **Rich components** - Input, Select, Checkbox, Radio, Spinner, ProgressBar, Forms
-- 🎨 **Customizable styling** - Colors, borders, text styles
-- 🔄 **No heavy dependencies** - Pure Node.js/TypeScript
-- 📝 **TypeScript support** - Full type definitions included
-- 🧪 **Well tested** - Comprehensive test suite
-- 🚀 **Works everywhere** - Node.js, Bun, with or without TypeScript
+## ✨ Features
 
-## Installation
+- 🎯 **Simple & Intuitive API** - Get started in minutes with clean, readable code
+- ⌨️ **Full Keyboard Navigation** - Arrow keys, Tab, Enter, Escape, and more
+- 🧩 **Rich Component Library** - Input, Select, Checkbox, Radio, Spinner, ProgressBar, Forms
+- 🎨 **Flexible Styling** - Colors, borders, text styles with ANSI escape codes
+- 📦 **Zero Dependencies** - Pure Node.js/TypeScript, no heavy external packages
+- 🔧 **TypeScript First** - Full type definitions for excellent IDE support
+- 🚀 **Cross-Platform** - Works on Windows, macOS, and Linux
+- 🪶 **Lightweight** - Small bundle size (~50KB)
+
+## 📦 Installation
 
 ```bash
 npm install @akaoio/tui
 ```
 
-## Quick Start
+Or with yarn:
+```bash
+yarn add @akaoio/tui
+```
+
+Or with pnpm:
+```bash
+pnpm add @akaoio/tui
+```
+
+## 🚀 Quick Start
 
 ```typescript
 import { Screen, Keyboard, Input } from '@akaoio/tui';
 
+// Initialize screen and keyboard
 const screen = new Screen();
 const keyboard = new Keyboard();
 
-const input = new Input(screen, keyboard, {
+// Create an input field
+const nameInput = new Input(screen, keyboard, {
   placeholder: 'Enter your name...',
   validator: (value) => {
     if (value.length < 3) {
@@ -37,98 +52,110 @@ const input = new Input(screen, keyboard, {
   }
 });
 
-input.on('submit', (value) => {
+// Handle submit
+nameInput.on('submit', (value) => {
   console.log(`Hello, ${value}!`);
   keyboard.stop();
   process.exit(0);
 });
 
-input.focus();
-input.render();
+// Start the interface
+screen.clear();
+nameInput.focus();
+nameInput.render();
 keyboard.start();
 ```
 
-## Components
+## 📚 Components
 
 ### Input
-Text input field with validation support.
+Text input field with validation, password mode, and multiline support.
 
 ```typescript
 const input = new Input(screen, keyboard, {
-  placeholder: 'Enter text...',
-  password: true,  // Hide input
-  multiline: true, // Multi-line text area
-  maxLength: 100,  // Character limit
+  placeholder: 'Type here...',
+  password: true,      // Hide input characters
+  multiline: true,     // Enable multiline text
+  maxLength: 100,      // Character limit
   validator: (value) => {
     // Return error message or null
     return value.length < 3 ? 'Too short' : null;
   }
 });
+
+input.on('change', (value) => console.log('Changed:', value));
+input.on('submit', (value) => console.log('Submitted:', value));
 ```
 
-### Select
-Dropdown menu with single or multiple selection.
+### Select (Dropdown)
+Single or multiple selection dropdown menu.
 
 ```typescript
 const select = new Select(screen, keyboard, {
   options: [
-    { label: 'Option 1', value: 1 },
-    { label: 'Option 2', value: 2 },
-    { label: 'Disabled', value: 3, disabled: true }
+    { label: 'JavaScript', value: 'js' },
+    { label: 'TypeScript', value: 'ts' },
+    { label: 'Python', value: 'py' },
+    { label: 'Go', value: 'go', disabled: true }
   ],
-  multiple: true,  // Allow multiple selection
-  maxDisplay: 5    // Max visible items
+  multiple: true,      // Enable multiple selection
+  maxDisplay: 5        // Max visible items
 });
+
+select.on('select', (value) => console.log('Selected:', value));
 ```
 
 ### Checkbox
-Toggle checkbox with label.
+Toggle checkbox with customizable label.
 
 ```typescript
 const checkbox = new Checkbox(screen, keyboard, {
-  label: 'Accept terms',
-  checked: false,
-  disabled: false
+  label: 'I agree to the terms',
+  checked: false
 });
 
 checkbox.on('change', (checked) => {
-  console.log('Checkbox is now:', checked);
+  console.log('Checkbox is:', checked ? 'checked' : 'unchecked');
 });
 ```
 
-### Radio
-Radio button group for single selection.
+### Radio Buttons
+Single selection from multiple options.
 
 ```typescript
 const radio = new Radio(screen, keyboard, {
   options: [
-    { label: 'Small', value: 's' },
-    { label: 'Medium', value: 'm' },
-    { label: 'Large', value: 'l' }
+    { label: 'Small', value: 'sm' },
+    { label: 'Medium', value: 'md' },
+    { label: 'Large', value: 'lg' }
   ],
-  selected: 1,  // Default selection index
-  orientation: 'vertical' // or 'horizontal'
+  selected: 1,              // Default selection index
+  orientation: 'vertical'   // or 'horizontal'
 });
+
+radio.on('change', (value) => console.log('Size:', value));
 ```
 
 ### Spinner
-Loading indicator with various styles.
+Animated loading indicator with multiple styles.
 
 ```typescript
 const spinner = new Spinner(screen, keyboard, {
-  text: 'Loading...',
-  style: 'dots', // dots, line, circle, square, arrow, pulse
+  text: 'Processing...',
+  style: 'dots',  // dots, line, circle, square, arrow, pulse
   color: Color.Cyan
 });
 
+// Start spinning
 spinner.start();
-// ... async operation
-spinner.succeed('Done!');
-// or spinner.fail('Error!');
+
+// Show different states
+setTimeout(() => spinner.succeed('Complete!'), 3000);
+// or: spinner.fail('Error!'), spinner.warn('Warning!'), spinner.info('Info')
 ```
 
-### ProgressBar
-Visual progress indicator.
+### Progress Bar
+Visual progress indicator with percentage display.
 
 ```typescript
 const progress = new ProgressBar(screen, keyboard, {
@@ -136,12 +163,20 @@ const progress = new ProgressBar(screen, keyboard, {
   current: 0,
   barWidth: 40,
   showPercentage: true,
-  showNumbers: true
+  showNumbers: true,     // Show "50/100"
+  barColor: Color.Green
 });
 
 // Update progress
-progress.setProgress(50);
-progress.increment(10);
+let value = 0;
+const interval = setInterval(() => {
+  value += 10;
+  progress.setProgress(value);
+  
+  if (value >= 100) {
+    clearInterval(interval);
+  }
+}, 500);
 ```
 
 ### Form
@@ -150,7 +185,12 @@ Container for multiple components with navigation.
 ```typescript
 const form = new Form(screen, keyboard, {
   title: 'User Registration',
-  components: [nameInput, emailInput, countrySelect, termsCheckbox],
+  components: [
+    nameInput,
+    emailInput,
+    countrySelect,
+    termsCheckbox
+  ],
   submitLabel: 'Register',
   cancelLabel: 'Cancel'
 });
@@ -159,96 +199,142 @@ form.on('submit', (values) => {
   console.log('Form data:', values);
 });
 
+form.on('cancel', () => {
+  console.log('Form cancelled');
+});
+
 form.activate();
 ```
 
-## Keyboard Navigation
-
-- **Arrow Keys** - Navigate between options
-- **Tab/Shift+Tab** - Move between form fields
-- **Enter** - Select/Submit
-- **Space** - Toggle checkboxes, select in lists
-- **Escape** - Cancel/Close
-- **Ctrl+C** - Exit application
-
-## Styling
+## 🎨 Styling
 
 ### Colors
 ```typescript
-import { Color, color, hex, rgb } from '@akaoio/tui';
+import { Color, BgColor, color, hex, rgb } from '@akaoio/tui';
 
 // ANSI colors
-color(Color.Red, BgColor.White);
+const text = color(Color.Red) + 'Red text' + reset();
+const bgText = color(Color.White, BgColor.Blue) + 'White on blue' + reset();
 
-// RGB colors
-rgb(255, 128, 0);
+// RGB colors (256 color mode)
+const rgbText = rgb(255, 128, 0) + 'Orange text' + reset();
+const rgbBg = bgRgb(64, 64, 64) + 'Dark gray background' + reset();
 
 // Hex colors
-hex('#FF8000');
+const hexText = hex('#FF5733') + 'Hex color text' + reset();
+const hexBg = bgHex('#2E86AB') + 'Hex background' + reset();
 ```
 
 ### Text Styles
 ```typescript
-import { bold, italic, underline } from '@akaoio/tui';
+import { bold, italic, underline, strikethrough } from '@akaoio/tui';
 
-bold('Bold text');
-italic('Italic text');
-underline('Underlined text');
+console.log(bold('Bold text'));
+console.log(italic('Italic text'));
+console.log(underline('Underlined text'));
+console.log(strikethrough('Strikethrough text'));
+
+// Combine styles
+console.log(bold(underline('Bold and underlined')));
 ```
 
-### Boxes
+### Box Drawing
 ```typescript
 import { BoxStyles, drawBox } from '@akaoio/tui';
 
+// Draw a box
 const box = drawBox(40, 10, BoxStyles.Rounded);
-// Also available: Single, Double, Bold, ASCII
+box.forEach(line => console.log(line));
+
+// Available styles:
+// - BoxStyles.Single   (└─┘)
+// - BoxStyles.Double   (╚═╝)
+// - BoxStyles.Rounded  (╰─╯)
+// - BoxStyles.Bold     (┗━┛)
+// - BoxStyles.ASCII    (+--+)
 ```
 
-## Examples
+## ⌨️ Keyboard Navigation
 
-Check the `examples/` directory for complete examples:
+Built-in keyboard shortcuts:
 
-- `simple.ts` - Basic input example
-- `form.ts` - Complete form with validation
-- `components.ts` - All components showcase
+- **Arrow Keys** (↑↓←→) - Navigate between options
+- **Tab / Shift+Tab** - Move between form fields
+- **Enter** - Select/Submit
+- **Space** - Toggle checkboxes, select in lists
+- **Escape** - Cancel/Close
+- **Home/End** - Jump to first/last item
+- **Page Up/Down** - Scroll through long lists
+- **Ctrl+C** - Exit application
 
-Run examples:
+## 📖 Examples
+
+Check out the `examples/` directory for complete working examples:
+
 ```bash
+# Simple input example
 npm run example:simple
+
+# Complete form with validation
 npm run example:form
+
+# All components showcase
 npm run example:components
 ```
 
-## API Reference
+## 🔧 API Reference
 
 ### Screen
-- `clear()` - Clear the screen
-- `moveCursor(x, y)` - Move cursor to position
-- `write(text)` - Write text at current position
-- `writeAt(x, y, text)` - Write text at specific position
-- `hideCursor()/showCursor()` - Toggle cursor visibility
+```typescript
+const screen = new Screen(stdout?: WriteStream);
+
+screen.clear();                          // Clear screen
+screen.moveCursor(x: number, y: number); // Move cursor
+screen.write(text: string);              // Write text
+screen.writeLine(text: string);          // Write line
+screen.writeAt(x, y, text);             // Write at position
+screen.hideCursor();                     // Hide cursor
+screen.showCursor();                     // Show cursor
+screen.getWidth();                       // Get terminal width
+screen.getHeight();                      // Get terminal height
+```
 
 ### Keyboard
-- `start()/stop()` - Start/stop keyboard listener
-- `onKey(callback)` - Listen for key events
-- `onChar(callback)` - Listen for character input
+```typescript
+const keyboard = new Keyboard(stdin?: ReadStream);
 
-### Component (base class)
-- `focus()/blur()` - Focus management
-- `show()/hide()` - Visibility control
-- `getValue()/setValue()` - Value management
-- `render()` - Render component
-- Event: `change`, `focus`, `blur`
+keyboard.start();                        // Start listening
+keyboard.stop();                         // Stop listening
+keyboard.onKey((key, event) => {});     // Listen for key events
+keyboard.onChar((char, event) => {});   // Listen for character input
+```
 
-## Requirements
+### Component Base Class
+All components extend from `Component` and share these methods:
+```typescript
+component.focus();                       // Focus component
+component.blur();                        // Remove focus
+component.show();                        // Show component
+component.hide();                        // Hide component
+component.getValue();                    // Get current value
+component.setValue(value);               // Set value
+component.render();                      // Re-render component
+component.setPosition(x, y);            // Set position
+component.setSize(width, height);       // Set size
 
-- Node.js >= 14.0.0
-- Terminal with TTY support
-- UTF-8 encoding support for special characters
+// Events (all components)
+component.on('change', (value) => {});
+component.on('focus', () => {});
+component.on('blur', () => {});
+```
 
-## Development
+## 🛠️ Development
 
 ```bash
+# Clone the repository
+git clone https://github.com/akaoio/tui.git
+cd tui
+
 # Install dependencies
 npm install
 
@@ -256,20 +342,36 @@ npm install
 npm run build
 
 # Run tests
-npm test
+npm run test
 
-# Watch mode
+# Run in watch mode
 npm run dev
 ```
 
-## License
+## 📄 License
 
-MIT
+MIT © [akaoio](https://github.com/akaoio)
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Credits
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-This is a complete rewrite focused on simplicity and practicality, inspired by various TUI libraries but built from scratch with a focus on real-world usage in backend projects.
+## 🌟 Acknowledgments
+
+This library was built from scratch with a focus on simplicity and practicality for backend Node.js applications.
+
+## 📮 Support
+
+- Create an [issue](https://github.com/akaoio/tui/issues) for bug reports
+- Start a [discussion](https://github.com/akaoio/tui/discussions) for feature requests
+- ⭐ Star the project if you find it useful!
+
+---
+
+Made with ❤️ by [akaoio](https://github.com/akaoio)
