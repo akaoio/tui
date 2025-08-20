@@ -6,6 +6,7 @@
 import * as readline from 'readline'
 import { EventEmitter } from 'events'
 import { OutputFilter } from './OutputFilter'
+import { VirtualCursorManager, VirtualCursor } from './VirtualCursor'
 
 /**
  * ANSI escape codes for terminal control
@@ -151,7 +152,7 @@ export class ScreenManager extends EventEmitter {
     private mouseBuffer = ''
     private lastMouseX = 0
     private lastMouseY = 0
-    private cursorMode = false // Ctrl+K cursor navigation mode
+    private virtualCursor: VirtualCursor | null = null
     private debugMode = false
     private debugFile?: import('fs').WriteStream
     private outputFilter: OutputFilter
@@ -447,24 +448,17 @@ export class ScreenManager extends EventEmitter {
                     process.exit(0)
                 }
                 
-                // Ctrl+K - toggle cursor mode (changed from Ctrl+M to avoid terminal conflicts)
+                // Ctrl+K - toggle virtual cursor mode
                 if (key.ctrl && key.name === 'k') {
-                    this.cursorMode = !this.cursorMode
-                    this.writeDebugInfo('CURSOR_MODE_TOGGLE', { enabled: this.cursorMode })
-                    this.emit('cursor-mode-toggle', this.cursorMode)
-                    
-                    if (this.cursorMode) {
-                        this.setCursorPosition(this.lastMouseX || Math.floor(this.width/2), this.lastMouseY || Math.floor(this.height/2))
-                    }
-                    
-                    // Don't call this.render() here - let SchemaRenderer handle it
+                    this.toggleVirtualCursor()
                     return
                 }
                 
-                // Cursor mode navigation
-                if (this.cursorMode) {
-                    this.handleCursorModeInput(char, key)
-                    return
+                // Virtual cursor navigation
+                if (this.virtualCursor && VirtualCursorManager.getInstance().isEnabled()) {
+                    if (this.virtualCursor.handleInput(char, key)) {
+                        return
+                    }
                 }
                 
                 // ESC key
@@ -539,10 +533,12 @@ export class ScreenManager extends EventEmitter {
             modifiers: { ctrl: event.ctrl, shift: event.shift, meta: event.meta }
         })
         
-        // In cursor mode, just update cursor position
-        if (this.cursorMode) {
-            this.setCursorPosition(this.lastMouseX, this.lastMouseY)
-            this.render()
+        // In virtual cursor mode, move cursor to mouse position
+        if (this.virtualCursor && VirtualCursorManager.getInstance().isEnabled()) {
+            this.virtualCursor.moveTo(this.lastMouseX, this.lastMouseY)
+            if (event.button === 0) { // Left click
+                this.virtualCursor.emit('click', { x: this.lastMouseX, y: this.lastMouseY })
+            }
             return
         }
         
@@ -582,7 +578,52 @@ export class ScreenManager extends EventEmitter {
     }
     
     /**
-     * Handle cursor mode input (Ctrl+K mode)
+     * Toggle virtual cursor mode
+     */
+    private toggleVirtualCursor(): void {
+        if (!this.virtualCursor) {
+            this.virtualCursor = VirtualCursorManager.getInstance().initialize(this)
+            
+            // Listen for cursor events
+            this.virtualCursor.on('click', (pos) => {
+                this.emit('virtual-cursor-click', pos)
+                // Find component at position
+                for (const [id, { region }] of this.components) {
+                    if (this.isInRegion(pos.x, pos.y, region)) {
+                        this.focusComponent(id)
+                        break
+                    }
+                }
+            })
+        }
+        
+        VirtualCursorManager.getInstance().toggle()
+        const enabled = VirtualCursorManager.getInstance().isEnabled()
+        this.writeDebugInfo('VIRTUAL_CURSOR_TOGGLE', { enabled })
+        this.emit('virtual-cursor-toggle', enabled)
+        
+        // Show status message
+        if (enabled) {
+            const msg = ' VIRTUAL CURSOR ON - Use arrows/WASD, Space to click, Ctrl+K to exit '
+            this.write(msg, Math.floor((this.width - msg.length) / 2), this.height - 1, '\x1b[43m\x1b[30m')
+        } else {
+            // Clear status message
+            this.write(' '.repeat(this.width), 0, this.height - 1)
+        }
+    }
+
+    /**
+     * Check if position is in region
+     */
+    private isInRegion(x: number, y: number, region: any): boolean {
+        return x >= region.x && 
+               x < region.x + region.width &&
+               y >= region.y && 
+               y < region.y + region.height
+    }
+
+    /**
+     * Handle cursor mode input (Ctrl+K mode) - DEPRECATED
      */
     private handleCursorModeInput(char: string, key: readline.Key): void {
           
@@ -1034,7 +1075,7 @@ export class ScreenManager extends EventEmitter {
             this.debugFile.write(`${y.toString().padStart(2, '0')}: ${line}\n`)
         }
         this.debugFile.write(`Cursor: (${this.cursorX}, ${this.cursorY})\n`)
-        this.debugFile.write(`Cursor Mode: ${this.cursorMode}\n`)
+        this.debugFile.write(`Virtual Cursor: ${VirtualCursorManager.getInstance().isEnabled()}\n`)
         this.debugFile.write(`Mouse: (${this.lastMouseX}, ${this.lastMouseY})\n`)
         this.debugFile.write('-'.repeat(80) + '\n')
     }

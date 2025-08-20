@@ -307,7 +307,12 @@ export class SchemaRenderer extends EventEmitter {
         ? this.components.get(mainScreen) 
         : mainScreen
         
-      this.renderComponent(screenComponent, { x: 0, y: 0, width, height })
+      // If it's a layout, render the layout
+      if (screenComponent && (screenComponent.$type === 'layout' || screenComponent.type === 'dock' || screenComponent.type === 'stack')) {
+        this.renderLayout(screenComponent, { x: 0, y: 0, width, height })
+      } else {
+        this.renderComponent(screenComponent, { x: 0, y: 0, width, height })
+      }
     }
 
     // Don't register with ScreenManager for now - it conflicts with our rendering
@@ -529,11 +534,24 @@ export class SchemaRenderer extends EventEmitter {
     // Template interpolation
     text = text.replace(/\{\{(.+?)\}\}/g, (match: string, expr: string) => {
       const trimmed = expr.trim()
+      const store = (global as any).$store
       
+      // Check for title prop
       if (trimmed === 'title') {
         return component._props?.title || component.props?.title || 'App'
-      } else if (trimmed === 'stats') {
+      } 
+      // Check for stats (legacy)
+      else if (trimmed === 'stats') {
         return this.calculateStats()
+      }
+      // Check store getters
+      else if (store?.getters && store.getters[trimmed] !== undefined) {
+        return String(store.getters[trimmed])
+      }
+      // Check store state
+      else if (store?.state && trimmed.startsWith('state.')) {
+        const statePath = trimmed.substring(6)
+        return String(store.state[statePath] || '')
       }
       
       return match

@@ -1,0 +1,191 @@
+{
+  "name": "TodoApp",
+  "version": "2.0.0",
+  "description": "Schema-driven Todo Application",
+  
+  "store": {
+    "$id": "TodoStore",
+    "type": "object",
+    "properties": {
+      "todos": {
+        "type": "array",
+        "default": [],
+        "description": "List of todo items"
+      },
+      "filter": {
+        "type": "string",
+        "enum": ["all", "active", "completed"],
+        "default": "all",
+        "description": "Current filter mode"
+      },
+      "selectedIndex": {
+        "type": "number",
+        "default": 0,
+        "description": "Currently selected todo index"
+      },
+      "inputText": {
+        "type": "string",
+        "default": "",
+        "description": "Text in the input field"
+      },
+      "editMode": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether in edit mode"
+      }
+    },
+    
+    "getters": {
+      "totalCount": {
+        "handler": "function() { return this.state.todos.length }"
+      },
+      "activeCount": {
+        "handler": "function() { return this.state.todos.filter(t => !t.completed).length }"
+      },
+      "completedCount": {
+        "handler": "function() { return this.state.todos.filter(t => t.completed).length }"
+      },
+      "filteredTodos": {
+        "handler": "function() { const filter = this.state.filter; const todos = this.state.todos; if (filter === 'active') return todos.filter(t => !t.completed); if (filter === 'completed') return todos.filter(t => t.completed); return todos; }"
+      }
+    },
+    
+    "mutations": {
+      "ADD_TODO": {
+        "handler": "function(state, text) { state.todos.unshift({ id: Date.now().toString(), text: text, completed: false, createdAt: new Date().toISOString() }); }"
+      },
+      "TOGGLE_TODO": {
+        "handler": "function(state, id) { const todo = state.todos.find(t => t.id === id); if (todo) todo.completed = !todo.completed; }"
+      },
+      "DELETE_TODO": {
+        "handler": "function(state, id) { const idx = state.todos.findIndex(t => t.id === id); if (idx !== -1) state.todos.splice(idx, 1); }"
+      },
+      "SET_FILTER": {
+        "handler": "function(state, filter) { state.filter = filter; state.selectedIndex = 0; }"
+      },
+      "SET_INPUT": {
+        "handler": "function(state, text) { state.inputText = text; }"
+      },
+      "MOVE_SELECTION": {
+        "handler": "function(state, delta) { const filtered = this.getters.filteredTodos; const max = filtered.length - 1; state.selectedIndex = Math.max(0, Math.min(max, state.selectedIndex + delta)); }"
+      }
+    },
+    
+    "actions": {
+      "addTodo": {
+        "handler": "function({ commit, state }) { if (state.inputText.trim()) { commit('ADD_TODO', state.inputText.trim()); commit('SET_INPUT', ''); } }"
+      },
+      "toggleSelected": {
+        "handler": "function({ commit, state, getters }) { const todos = getters.filteredTodos; if (todos[state.selectedIndex]) { commit('TOGGLE_TODO', todos[state.selectedIndex].id); } }"
+      },
+      "deleteSelected": {
+        "handler": "function({ commit, state, getters }) { const todos = getters.filteredTodos; if (todos[state.selectedIndex]) { commit('DELETE_TODO', todos[state.selectedIndex].id); } }"
+      }
+    }
+  },
+  
+  "components": {
+    "Header": {
+      "$id": "Header",
+      "type": "container",
+      "style": {
+        "background": "#1a1a2e",
+        "color": "white",
+        "padding": 1,
+        "border": "double"
+      },
+      "template": "TODO MANAGER v2.0 (Schema-Driven)\nTotal: {{totalCount}} | Active: {{activeCount}} | Completed: {{completedCount}}"
+    },
+    
+    "InputField": {
+      "$id": "InputField",
+      "type": "input",
+      "props": {
+        "placeholder": "What needs to be done?",
+        "value": "{{inputText}}"
+      },
+      "style": {
+        "border": "single",
+        "padding": 1
+      },
+      "events": {
+        "onChange": "SET_INPUT",
+        "onSubmit": "addTodo"
+      }
+    },
+    
+    "TodoList": {
+      "$id": "TodoList",
+      "type": "list",
+      "data": "{{filteredTodos}}",
+      "selectedIndex": "{{selectedIndex}}",
+      "itemTemplate": "{{completed ? '[✓]' : '[ ]'}} {{text}}",
+      "style": {
+        "border": "rounded",
+        "height": 15,
+        "selectedBackground": "#333",
+        "completedColor": "gray"
+      },
+      "events": {
+        "onSelect": "MOVE_SELECTION",
+        "onToggle": "toggleSelected",
+        "onDelete": "deleteSelected"
+      }
+    },
+    
+    "FilterBar": {
+      "$id": "FilterBar",
+      "type": "buttonGroup",
+      "buttons": [
+        { "label": "All", "value": "all" },
+        { "label": "Active", "value": "active" },
+        { "label": "Completed", "value": "completed" }
+      ],
+      "selected": "{{filter}}",
+      "style": {
+        "background": "#0f0f0f",
+        "selectedBackground": "#4a4a4a",
+        "padding": 1
+      },
+      "events": {
+        "onChange": "SET_FILTER"
+      }
+    },
+    
+    "HelpBar": {
+      "$id": "HelpBar",
+      "type": "text",
+      "template": "[Tab] Focus | [Space] Toggle | [d] Delete | [↑↓] Navigate | [1-3] Filter | [q] Quit",
+      "style": {
+        "background": "#222",
+        "color": "yellow",
+        "align": "center"
+      }
+    }
+  },
+  
+  "layout": {
+    "type": "flexbox",
+    "direction": "vertical",
+    "children": [
+      { "component": "Header", "height": 4 },
+      { "component": "InputField", "height": 3 },
+      { "component": "TodoList", "flex": 1 },
+      { "component": "FilterBar", "height": 3 },
+      { "component": "HelpBar", "height": 1 }
+    ]
+  },
+  
+  "keyBindings": {
+    "q": "quit",
+    "Tab": "focusNext",
+    "Shift+Tab": "focusPrev",
+    "Space": "toggleSelected",
+    "d": "deleteSelected",
+    "Up": "moveUp",
+    "Down": "moveDown",
+    "1": "filterAll",
+    "2": "filterActive",
+    "3": "filterCompleted"
+  }
+}

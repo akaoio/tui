@@ -1,0 +1,44 @@
+{
+  "app": {
+    "name": "My TUI Application",
+    "version": "1.0.0",
+    "author": "Developer"
+  },
+  "server": {
+    "host": "localhost",
+    "port": 3000,
+    "ssl": false,
+    "cors": {
+      "enabled": true,
+      "origins": [
+        "http://localhost:3000",
+        "https://example.com"
+      ]
+    }
+  },
+  "database": {
+    "type": "postgresql",
+    "host": "localhost",
+    "port": 5432,
+    "name": "myapp",
+    "credentials": {
+      "user": "admin",
+      "password": "secret"
+    }
+  },
+  "features": {
+    "authentication": true,
+    "logging": true,
+    "monitoring": false,
+    "cache": {
+      "enabled": true,
+      "ttl": 3600,
+      "provider": "redis"
+    }
+  },
+  "environments": [
+    "development",
+    "staging",
+    "production"
+  ]
+}

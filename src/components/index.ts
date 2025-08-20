@@ -5,3 +5,4 @@ export * from './Radio';
 export * from './Spinner';
 export * from './ProgressBar';
 export * from './Form';
+export * from './JsonEditor';

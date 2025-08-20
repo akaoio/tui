@@ -1,23 +1,16 @@
 [
   {
-    "id": "1",
-    "title": "Build a modern TUI framework",
+    "id": "1755700408371",
+    "text": "ssssss",
     "completed": true,
-    "priority": "high",
-    "createdAt": "2025-08-20T09:43:05.321Z"
+    "createdAt": "2025-08-20T14:33:28.371Z",
+    "updatedAt": "2025-08-20T14:33:32.617Z"
   },
   {
-    "id": "2",
-    "title": "Create smooth terminal UX",
-    "completed": true,
-    "priority": "high",
-    "createdAt": "2025-08-20T09:43:05.321Z"
-  },
-  {
-    "id": "3",
-    "title": "Add component system",
+    "id": "1755700405395",
+    "text": "aaaaaaa",
     "completed": false,
-    "priority": "medium",
-    "createdAt": "2025-08-20T09:43:05.321Z"
+    "createdAt": "2025-08-20T14:33:25.395Z",
+    "updatedAt": "2025-08-20T14:33:25.395Z"
   }
 ]

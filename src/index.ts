@@ -2,6 +2,7 @@ export * from './core/keyboard';
 export * from './core/screen';
 export * from './core/RenderMode';
 export * from './core/ScreenManager';
+export * from './core/VirtualCursor';
 export * from './core/Component';
 export * from './core/App';
 export * from './core/ComponentRegistry';
