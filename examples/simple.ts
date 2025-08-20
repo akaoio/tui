@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-import { Screen, Keyboard, Key, Input } from '../src-new';
+import { Screen, Keyboard, Key, Input } from '../src';
 
 async function main() {
   const screen = new Screen();

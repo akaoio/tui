@@ -7,7 +7,7 @@ import {
   Select, 
   Checkbox, 
   Radio 
-} from '../src-new';
+} from '../src';
 
 async function main() {
   const screen = new Screen();

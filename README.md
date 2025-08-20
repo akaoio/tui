@@ -1,498 +1,275 @@
-
-
-
-
-
 # @akaoio/tui
 
-**@akaoio/tui** is a fork of [Charsm](https://github.com/SfundoMhlungu/charsm) by Sifundo Mhlungu, which is a port of the gorgeous [Lipgloss](https://github.com/charmbracelet/lipgloss) library from Charm CLI, part of their impressive suite of CLI tools. Definitely check out Charm's collection of [tools](https://charm.sh/); they're fantastic.
+Simple and practical Terminal UI framework for Node.js applications. Build interactive command-line interfaces with ease.
 
-> **Attribution**: This project is a fork of the original [Charsm](https://github.com/SfundoMhlungu/charsm) project by Sifundo Mhlungu. All credit for the initial WebAssembly port of Lipgloss goes to the original author.
+## Features
 
-The original author is a huge fan of CLI tools and has been building a lot of them lately. Naturally, they wanted their CLIs to look amazing, which is exactly what Charm CLI tools achieve. Not wanting to Go without that same polish in JavaScript, they created Charsm, which we've now forked as @akaoio/tui for further customization! For details on how Lipgloss was ported using WebAssembly, see the **porting lipgloss with wasm** section below.
-
-If you’re looking to build beautiful TUIs, this library is for you!
-
-![temp placeholder](https://raw.githubusercontent.com/SfundoMhlungu/Assets-for-Software-Design-Documents/refs/heads/main/377967919-99c5c015-551b-4897-8cd1-bcaafa0aad5a.png)
-
-
-<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
-
-- [@akaoio/tui](#akaoiotui)
-   * [Installation](#installation)
-   * [Getting Started](#getting-started)
-      + [Initialization](#initialization)
-      + [Creating Styles](#creating-styles)
-      + [Style Options](#style-options)
-      + [Padding and Margins](#padding-and-margins)
-      + [Simple Example](#simple-example)
-   * [Layout](#layout)
-   * [Creating Tables](#creating-tables)
-   * [Render Markdown](#render-markdown)
-   * [Porting Lipgloss with WASM](#porting-lipgloss-with-wasm)
-   * [Plan](#plan)
-   * [Contribution](#contribution)
-   * [Notes on Building an Executable](#notes-on-building-an-executable)
-   * [Documentation: Bundling the Node Application with `@akaoio/tui` WASM File](#documentation-bundling-the-node-application-with-akaoiotui-wasm-file)
-      + [Step 1: Accessing the WASM File in `@akaoio/tui`](#step-1-accessing-the-wasm-file-in-akaoiotui)
-      + [Step 2: Bundling with `pkg`](#step-2-bundling-with-pkg)
-      + [Step 3: Bundling with `nexe`](#step-3-bundling-with-nexe)
-      + [Step 4: Bundling with `electron-builder` (For Electron Apps)](#step-4-bundling-with-electron-builder-for-electron-apps)
-      + [Conclusion](#conclusion)
-
-<!-- TOC end -->
-
-<!-- TOC --><a name="akaoiotui"></a>
+- 🎯 **Simple API** - Easy to learn and use
+- ⌨️ **Full keyboard navigation** - Arrow keys, Tab, Enter, Escape, etc.
+- 📦 **Rich components** - Input, Select, Checkbox, Radio, Spinner, ProgressBar, Forms
+- 🎨 **Customizable styling** - Colors, borders, text styles
+- 🔄 **No heavy dependencies** - Pure Node.js/TypeScript
+- 📝 **TypeScript support** - Full type definitions included
+- 🧪 **Well tested** - Comprehensive test suite
+- 🚀 **Works everywhere** - Node.js, Bun, with or without TypeScript
 
 ## Installation
 
-Install from npm with your favorite package manager:
-
 ```bash
-pnpm add @akaoio/tui
-```
-## Update v0.2.0
-
-added huh [forms](https://github.com/SfundoMhlungu/huh-shared-lib)
-
-Tested on Node.js v20.15.0 and v18.20.4 both linux and windows
-
-original charmcli huh [repo](https://github.com/charmbracelet/huh)
-
-## Getting Started
-
-### Initialization
-
-```js
-import {initLip, Lipgloss} from "@akaoio/tui"
-
-(async function() {
-    const isInit = await initLip(); // returns false if WASM fails to load, otherwise true
-
-    if (!isInit) return; // handle failure case
-})();
+npm install @akaoio/tui
 ```
 
-Once WASM is loaded, you can create a `Lipgloss` instance:
+## Quick Start
 
-```js
-(async function() {
-    const lip = new Lipgloss();
-})();
-```
+```typescript
+import { Screen, Keyboard, Input } from '@akaoio/tui';
 
-### Creating Styles
+const screen = new Screen();
+const keyboard = new Keyboard();
 
-At its core, @akaoio/tui lets you define styles similar to CSS, which can then be applied to text.
-
-```js
-(async function() {
-    // Define a style
-    lip.createStyle({
-        id: "primary",
-        canvasColor: { color: "#7D56F4" },
-        border: { type: "rounded", background: "#0056b3", sides: [true] },
-        padding: [6, 8, 6, 8],
-        margin: [0, 0, 8, 0],
-        bold: true,
-        width: 10,
-        height: 12,
-    });
-
-    // Apply the style
-    const result = lip.apply({ value: "🔥🦾🍕" });
-    console.log(result); // Output styled result
-
-    // Apply a specific style by ID
-    const custom = lip.apply({ value: "🔥🦾🍕", id: "primary" });
-    console.log(custom);
-})();
-```
-
-### Style Options
-
-Here’s an overview of the options available for creating styles:
-
-```js
-type LipglossPos = "bottom" | "top" | "left" | "right" | "center";
-type BorderType = "rounded" | "block" | "thick" | "double";
-
-interface Style {
-    id: string;
-    canvasColor?: { color?: string, background?: string };
-    border?: { type: BorderType, foreground?: string, background?: string, sides: Array<boolean> };
-    padding?: Array<number>;
-    margin: Array<number>;
-    bold?: boolean;
-    alignV?: LipglossPos;
-    alignH?: LipglossPos;   // buggy don't work
-    width?: number;
-    height?: number;
-    maxWidth?: number;
-    maxHeight?: number;
-}
-```
-alignV works!
-
-> **Note:** For horizontal alignment(alignH), use padding and margins.
-
-### Padding and Margins
-
-- One value applies to all sides: `[1]`
-- Two values apply to vertical and horizontal sides: `[1, 2]`
-- Four values apply to top, right, bottom, and left: `[1, 2, 3, 4]`
-
-### Simple Example
-
-```js
-    lip.createStyle({
-        id: "primary",
-        canvasColor: { color: "#7D56F4" },
-        border: { type: "rounded", background: "#0056b3", sides: [true] },
-        padding: [6, 8, 6, 8],
-        margin: [0, 2, 8, 2],
-        bold: true,
-        align: 'center',
-        width: 10,
-        height: 12,
-    });;
-
- lip.createStyle({
-    id: "secondary",
-  canvasColor: {color: "#7D56F4" },
-  border: { type: "rounded", background: "#0056b3", sides: [true, false] },
-  padding: [6, 8, 6, 8],
-   margin: [0, 0, 8, 1],
-    bold: true,
-    // alignH: "right",
-
-   alignV: "bottom",
-   width: 10, 
-   height: 12,
-
-  });
-
-
-const a = lip.apply({ value: "Charsmmm", id: "secondary" });
-const b = lip.apply({ value: "🔥🦾🍕", id: "primary" });
-const c = lip.apply({ value: 'Charsmmm', id: "secondary" });
-```
-
-## colors  - for both color, background and border
-
-1. completeAdaptiveColor
-
-```js
- lip.createStyle({
-       id: "primary",
-     canvasColor: {color: "#7D56F4", background:{completeAdaptiveColor: {  Light:{TrueColor: "#d7ffae", ANSI256: "193", ANSI: "11"}, Dark: {TrueColor: "#d75fee", ANSI256: "163", ANSI: "5"}}}},
-   
-
-     });
-
-```
-
-2. Adaptive Color 
-
-
-```js
- const highlight = { Light: "#874BFD", Dark: "#7D56F4" }
- canvasColor: { color:{ adaptiveColor: highlight } , background:  "#FAFAFA" },
-
-```
-
-3. completColor 
-
-```js
- canvasColor: {color: {completeColor: {TrueColor: "#d7ffae", ANSI256: "193", ANSI: "11"}}}
-
-```
-
-## Layout
-
-@akaoio/tui currently supports horizontal and vertical layouts.
-
-```js
-const res = lip.join({ direction: "horizontal", elements: [a, b, c], position: "left" });
-console.log(res);
-```
-
-> For details on `lipgloss.JoinVertical` and `lipgloss.JoinHorizontal`, refer to Charm’s lipgloss repo.
-
-## Creating Tables
-
-@akaoio/tui can create tables easily. Here’s an example:
-
-```js
-const rows = [
-    ["Chinese", "您好", "你好"],
-    ["Japanese", "こんにちは", "やあ"],
-    ["Arabic", "أهلين", "أهلا"],
-    ["Russian", "Здравствуйте", "Привет"],
-    ["Spanish", "Hola", "¿Qué tal?"]
-];
-
-const tableData = { headers: ["LANGUAGE", "FORMAL", "INFORMAL"], rows: rows };
-
-const t = lip.newTable({
-    data: tableData,
-    table: { border: "rounded", color: "99", width: 100 },
-    header: { color: "212", bold: true },
-    rows: { even: { color: "246" } }
+const input = new Input(screen, keyboard, {
+  placeholder: 'Enter your name...',
+  validator: (value) => {
+    if (value.length < 3) {
+      return 'Name must be at least 3 characters';
+    }
+    return null;
+  }
 });
 
-console.log(t);
+input.on('submit', (value) => {
+  console.log(`Hello, ${value}!`);
+  keyboard.stop();
+  process.exit(0);
+});
+
+input.focus();
+input.render();
+keyboard.start();
 ```
 
-## Render Markdown
+## Components
 
-use's [glamour](github.com/charmbracelet/glamour) from charm CLI underneath
+### Input
+Text input field with validation support.
 
-```js
-
-
-  const content = `
-# Today’s Menu
-
-## Appetizers
-
-| Name        | Price | Notes                           |
-| ---         | ---   | ---                             |
-| Tsukemono   | $2    | Just an appetizer               |
-| Tomato Soup | $4    | Made with San Marzano tomatoes  |
-| Okonomiyaki | $4    | Takes a few minutes to make     |
-| Curry       | $3    | We can add squash if you’d like |
-
-## Seasonal Dishes
-
-| Name                 | Price | Notes              |
-| ---                  | ---   | ---                |
-| Steamed bitter melon | $2    | Not so bitter      |
-| Takoyaki             | $3    | Fun to eat         |
-| Winter squash        | $3    | Today it's pumpkin |
-
-## Desserts
-
-| Name         | Price | Notes                 |
-| ---          | ---   | ---                   |
-| Dorayaki     | $4    | Looks good on rabbits |
-| Banana Split | $5    | A classic             |
-| Cream Puff   | $3    | Pretty creamy!        |
-
-All our dishes are made in-house by Karen, our chef. Most of our ingredients
-are from our garden or the fish market down the street.
-
-Some famous people that have eaten here lately:
-
-* [x] René Redzepi
-* [x] David Chang
-* [ ] Jiro Ono (maybe some day)
-
-Bon appétit!
-`
-
-  // technically not part of lip(lipgloss)
-  console.log(lip.RenderMD(content, "tokyo-night"))
-
-
+```typescript
+const input = new Input(screen, keyboard, {
+  placeholder: 'Enter text...',
+  password: true,  // Hide input
+  multiline: true, // Multi-line text area
+  maxLength: 100,  // Character limit
+  validator: (value) => {
+    // Return error message or null
+    return value.length < 3 ? 'Too short' : null;
+  }
+});
 ```
 
-## Porting Lipgloss with WASM
+### Select
+Dropdown menu with single or multiple selection.
 
-The implementation here is a straightforward 1-to-1 port! In other words, for example `createStyle` is built up from a bunch of lipgloss functions with conditional checks. It’s verbose, kind of repetitive, and maybe even a bit annoying.
-
-The reason for this verbosity is to avoid using `reflect` for dynamic calls to lipgloss functions, `reflect` in Go is a form of metaprogramming that's super expensive.
-
-Here's an example of `Join`:
-
-```go
-func (l *lipWrapper) Join(this js.Value, args []js.Value) interface{} {
-	direction := args[0].Get("direction").String()
-
-	var elements []string
-	e := args[0].Get("elements")
-	for i := 0; i < e.Length(); i++ {
-		elements = append(elements, e.Index(i).String())
-	}
-
-	if CheckTruthy(args, "pc") {
-		if direction == "vertical" {
-			return lipgloss.JoinVertical(lipgloss.Position(args[0].Get("pc").Int()), elements...)
-		} else {
-			return lipgloss.JoinHorizontal(lipgloss.Position(args[0].Get("pc").Int()), elements...)
-		}
-	}
-
-	if CheckTruthy(args, "position") {
-		pos := args[0].Get("position").String()
-		var apos lipgloss.Position
-
-		if pos == "bottom" {
-			apos = lipgloss.Bottom
-		} else if pos == "top" {
-			apos = lipgloss.Top
-		} else if pos == "right" {
-			apos = lipgloss.Right
-		} else {
-			apos = lipgloss.Left
-		}
-
-		if direction == "vertical" {
-			return lipgloss.JoinVertical(apos, elements...)
-		} else {
-			return lipgloss.JoinHorizontal(apos, elements...)
-		}
-	}
-
-	return ""
-}
+```typescript
+const select = new Select(screen, keyboard, {
+  options: [
+    { label: 'Option 1', value: 1 },
+    { label: 'Option 2', value: 2 },
+    { label: 'Disabled', value: 3, disabled: true }
+  ],
+  multiple: true,  // Allow multiple selection
+  maxDisplay: 5    // Max visible items
+});
 ```
 
-That's why some features like adaptive colors aren’t implemented just yet—those will come later!
+### Checkbox
+Toggle checkbox with label.
 
+```typescript
+const checkbox = new Checkbox(screen, keyboard, {
+  label: 'Accept terms',
+  checked: false,
+  disabled: false
+});
 
-## Plan
-
-Next up, I’m planning to port Bubble Tea for interactive components!
-
-## Contribution
-
-This project came up while I was building a CLI tool in JavaScript to monitor websites. I wanted it to look nice, and since I’ve been using lipgloss a lot in Go, I figured I'd port it.
-
-Meaning, yes, the Go code is all over the place! Here’s a look at `main` for context:
-
-```go
-func main() {
-
-	lip := &lipWrapper{}
-	lip.styles = make(map[string]string)
-	lip.styles2o = make(map[string]lipgloss.Style)
-
-	// Export the `add` function to JavaScript
-	// js.Global().Set("add", js.FuncOf(add))
-	// js.Global().Set("greet", js.FuncOf(greet))
-	// js.Global().Set("multiply", js.FuncOf(multiply))
-	// js.Global().Set("processUser", js.FuncOf(processUser))
-	// js.Global().Set("asyncAdd", js.FuncOf(asyncAdd))
-	// js.Global().Set("lipprint", js.FuncOf(printWithGloss))
-	// js.Global().Set("lipgloss", js.Func(lipgloss.NewStyle))
-	js.Global().Set("createStyle", js.FuncOf(lip.createStyle))
-	js.Global().Set("apply", js.FuncOf(lip.apply))
-	// js.Global().Set("canvasColor", js.FuncOf(lip.canvasColor))
-	// js.Global().Set("padding", js.FuncOf(lip.canvasColor))
-	// js.Global().Set("render", js.FuncOf(lip.render))
-	// js.Global().Set("margin", js.FuncOf(lip.margin))
-	// js.Global().Set("place", js.FuncOf(lip.place))
-	// js.Global().Set("size", js.FuncOf(lip.size))
-	// js.Global().Set("JoinHorizontal", js.FuncOf(lip.JoinHorizontal))
-	// js.Global().Set("JoinVertical", js.FuncOf(lip.JoinVertical))
-	// js.Global().Set("border", js.FuncOf(lip.border))
-	// js.Global().Set("width", js.FuncOf(lip.width))
-	// js.Global().Set("height", js.FuncOf(lip.height))
-	js.Global().Set("newTable", js.FuncOf(lip.newTable))
-	// js.Global().Set("tableStyle", js.FuncOf(lip.tableStyle))
-	js.Global().Set("join", js.FuncOf(lip.Join))
-
-	// Example user input
-	// input := "lipgloss.NewStyle().Foreground(lipgloss.Color(fg)).Background(lipgloss.Color(bg))"
-
-	// // Assuming user provides these values
-	// fg := "#FF0000" // red
-	// bg := "#00FF00" // green
-
-	// // style := buildStyleFromInput(input, fg, bg)
-
-	// // Print styled text to see the result
-	// styledText := style.Render("Hello, Styled World!")
-	// fmt.Println(styledText)
-	// // Keep the program running (WebAssembly runs until manually stopped)
-	select {} // loop
-}
-```
-yeah really bad and that's just main.
-
-I’ve got files everywhere, so I’ll need to clean it up once I find the time then I'll post the Golang code.
-
-## Notes on Building an Executable
-
-To turn your Node application into an executable, make sure your build tool copies and bundles the WASM file in `@akaoio/tui`’s `dist` folder.
-
-Since it’s read with `fs` (not imported), your bundler needs to know about this file:
-
-```javascript
-const wasmPath = path.resolve(dir, './lip.wasm');
-const wasmfile = fs.readFileSync(wasmPath);
+checkbox.on('change', (checked) => {
+  console.log('Checkbox is now:', checked);
+});
 ```
 
-**Disclaimer ⚠️:** This following instructions are generated by GPT, so I haven’t fully tested the bundling process yet, but I do use `pkg` to create an exe.
+### Radio
+Radio button group for single selection.
 
-## Documentation: Bundling the Node Application with `@akaoio/tui` WASM File
+```typescript
+const radio = new Radio(screen, keyboard, {
+  options: [
+    { label: 'Small', value: 's' },
+    { label: 'Medium', value: 'm' },
+    { label: 'Large', value: 'l' }
+  ],
+  selected: 1,  // Default selection index
+  orientation: 'vertical' // or 'horizontal'
+});
+```
 
-This guide covers how to bundle a Node.js application that uses the `@akaoio/tui` library and its `lip.wasm` file into a standalone executable. We'll review setup for common tools like `pkg`, `nexe`, and `electron-builder`.
+### Spinner
+Loading indicator with various styles.
 
-### Step 1: Accessing the WASM File in `@akaoio/tui`
+```typescript
+const spinner = new Spinner(screen, keyboard, {
+  text: 'Loading...',
+  style: 'dots', // dots, line, circle, square, arrow, pulse
+  color: Color.Cyan
+});
 
-To bundle, you’ll need a dynamic reference to `lip.wasm` since its path will change in the executable.
+spinner.start();
+// ... async operation
+spinner.succeed('Done!');
+// or spinner.fail('Error!');
+```
 
-1. **Development Path:** Typically, `node_modules/@akaoio/tui/dist/lip.wasm`.
-2. **Bundled Path:** Dynamically reference the WASM file at runtime.
+### ProgressBar
+Visual progress indicator.
 
+```typescript
+const progress = new ProgressBar(screen, keyboard, {
+  total: 100,
+  current: 0,
+  barWidth: 40,
+  showPercentage: true,
+  showNumbers: true
+});
 
-### Step 2: Bundling with `pkg`
+// Update progress
+progress.setProgress(50);
+progress.increment(10);
+```
 
-To include `lip.wasm`:
+### Form
+Container for multiple components with navigation.
 
-1. **Update `package.json`:**
+```typescript
+const form = new Form(screen, keyboard, {
+  title: 'User Registration',
+  components: [nameInput, emailInput, countrySelect, termsCheckbox],
+  submitLabel: 'Register',
+  cancelLabel: 'Cancel'
+});
 
-   ```json
-   {
-     "pkg": {
-       "assets": [
-         "node_modules/@akaoio/tui/dist/lip.wasm"
-       ]
-     }
-   }
-   ```
+form.on('submit', (values) => {
+  console.log('Form data:', values);
+});
 
-2. **Bundle the Application:**
+form.activate();
+```
 
-   ```bash
-   pkg . --assets node_modules/@akaoio/tui/dist/lip.wasm
-   ```
+## Keyboard Navigation
 
-### Step 3: Bundling with `nexe`
+- **Arrow Keys** - Navigate between options
+- **Tab/Shift+Tab** - Move between form fields
+- **Enter** - Select/Submit
+- **Space** - Toggle checkboxes, select in lists
+- **Escape** - Cancel/Close
+- **Ctrl+C** - Exit application
 
-1. **Run `nexe` with Resource Flag:**
+## Styling
 
-   ```bash
-   nexe -i index.js -o myApp.exe --resource node_modules/@akaoio/tui/dist/lip.wasm
-   ```
+### Colors
+```typescript
+import { Color, color, hex, rgb } from '@akaoio/tui';
 
-2. **Update Code for `process.cwd()`:**
+// ANSI colors
+color(Color.Red, BgColor.White);
 
-   ```javascript
-   const wasmPath = path.join(process.cwd(), 'node_modules/@akaoio/tui/dist/lip.wasm');
-   ```
+// RGB colors
+rgb(255, 128, 0);
 
-### Step 4: Bundling with `electron-builder` (For Electron Apps)
+// Hex colors
+hex('#FF8000');
+```
 
-1. **Modify `electron-builder` Configuration:**
+### Text Styles
+```typescript
+import { bold, italic, underline } from '@akaoio/tui';
 
-   ```json
-   {
-     "files": [
-       "dist/**/*",
-       "node_modules/@akaoio/tui/dist/lip.wasm"
-     ]
-   }
-   ```
+bold('Bold text');
+italic('Italic text');
+underline('Underlined text');
+```
 
-2. **Reference with `__dirname`:**
+### Boxes
+```typescript
+import { BoxStyles, drawBox } from '@akaoio/tui';
 
-   ```javascript
-   const wasmPath = path.join(__dirname, 'node_modules/@akaoio/tui/dist/lip.wasm');
-   ```
+const box = drawBox(40, 10, BoxStyles.Rounded);
+// Also available: Single, Double, Bold, ASCII
+```
 
-### Conclusion
+## Examples
 
-Each bundling tool has a different configuration to include the `lip.wasm` file. Following these steps will ensure `@akaoio/tui`’s WASM file is properly included in your executable.
+Check the `examples/` directory for complete examples:
+
+- `simple.ts` - Basic input example
+- `form.ts` - Complete form with validation
+- `components.ts` - All components showcase
+
+Run examples:
+```bash
+npm run example:simple
+npm run example:form
+npm run example:components
+```
+
+## API Reference
+
+### Screen
+- `clear()` - Clear the screen
+- `moveCursor(x, y)` - Move cursor to position
+- `write(text)` - Write text at current position
+- `writeAt(x, y, text)` - Write text at specific position
+- `hideCursor()/showCursor()` - Toggle cursor visibility
+
+### Keyboard
+- `start()/stop()` - Start/stop keyboard listener
+- `onKey(callback)` - Listen for key events
+- `onChar(callback)` - Listen for character input
+
+### Component (base class)
+- `focus()/blur()` - Focus management
+- `show()/hide()` - Visibility control
+- `getValue()/setValue()` - Value management
+- `render()` - Render component
+- Event: `change`, `focus`, `blur`
+
+## Requirements
+
+- Node.js >= 14.0.0
+- Terminal with TTY support
+- UTF-8 encoding support for special characters
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Build the library
+npm run build
+
+# Run tests
+npm test
+
+# Watch mode
+npm run dev
+```
+
+## License
+
+MIT
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Credits
+
+This is a complete rewrite focused on simplicity and practicality, inspired by various TUI libraries but built from scratch with a focus on real-world usage in backend projects.

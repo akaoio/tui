@@ -9,7 +9,7 @@ import {
   Checkbox,
   Radio,
   Color
-} from '../src-new';
+} from '../src';
 
 async function main() {
   const screen = new Screen();
