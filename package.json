@@ -1,6 +1,6 @@
 {
   "name": "@akaoio/tui",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Simple and practical Terminal UI framework for Node.js",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -52,12 +52,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/akaoagent/tui.git"
+    "url": "https://github.com/akaoio/tui.git"
   },
   "bugs": {
-    "url": "https://github.com/akaoagent/tui/issues"
+    "url": "https://github.com/akaoio/tui/issues"
   },
-  "homepage": "https://github.com/akaoagent/tui#readme",
+  "homepage": "https://github.com/akaoio/tui#readme",
   "engines": {
     "node": ">=14.0.0"
   },
