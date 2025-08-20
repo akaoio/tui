@@ -1162,6 +1162,7 @@ export class SchemaRenderer extends EventEmitter {
     const store = (global as any).$store
     let placeholder = node.props?.placeholder || 'Enter text...'
     const style = node.props?.style || {}
+    const padding = style.padding || 0
     
     // Update placeholder based on editing mode
     if (this.inputMode && this.editingTodoId) {
@@ -1173,31 +1174,43 @@ export class SchemaRenderer extends EventEmitter {
     // Get current value - use inputText if in input mode, otherwise store value
     const value = this.inputMode ? this.inputText : (store?.state?.inputText || '')
     
-    // Draw border if specified
-    if (style.border) {
-      const borderStyle = style.border === 'single' ? 'single' : style.border
-      this.drawBox(x, y, width, height || 3, '', borderStyle)
-    }
+    // Calculate text area
+    const textX = x + padding
+    const textY = y
+    const textWidth = width - (padding * 2)
     
-    // Calculate text area inside border
-    const textX = style.border ? x + 1 : x
-    const textY = style.border ? y + 1 : y
-    const textWidth = style.border ? width - 2 : width
+    // Skip rendering if no content area available
+    if (height <= 0 || textWidth <= 0) return
     
     // Display value or placeholder
     const displayText = value || placeholder
     const textColor = value ? '\x1b[37m' : '\x1b[90m'
     
-    // Clear the line first
+    // Clear the text area first (stay within bounds)
     this.screen.write(' '.repeat(textWidth), textX, textY, '')
     
-    // Write the text
-    const truncated = displayText.length > textWidth - 1 ? displayText.substring(0, textWidth - 2) : displayText
-    this.screen.write(truncated, textX, textY, textColor)
+    // Handle text overflow with scrolling
+    let visibleText = displayText
+    let scrollOffset = 0
+    
+    if (displayText.length > textWidth) {
+      // Simple scrolling: show the end of the text when it's too long
+      if (this.inputMode && value.length > textWidth) {
+        scrollOffset = value.length - textWidth + 1
+        visibleText = displayText.substring(scrollOffset, scrollOffset + textWidth)
+      } else {
+        // Truncate with ellipsis when not editing
+        visibleText = displayText.substring(0, textWidth - 3) + '...'
+      }
+    }
+    
+    // Write the visible text
+    this.screen.write(visibleText, textX, textY, textColor)
     
     // Show cursor if in input mode
     if (this.inputMode) {
-      const cursorPos = value.length < textWidth - 1 ? value.length : textWidth - 2
+      const cursorOffset = Math.max(0, value.length - scrollOffset)
+      const cursorPos = Math.min(cursorOffset, textWidth - 1)
       this.screen.write('▌', textX + cursorPos, textY, '\x1b[93m')
     }
   }

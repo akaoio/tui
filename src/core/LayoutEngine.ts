@@ -37,9 +37,10 @@ export class LayoutEngine extends EventEmitter {
     const props = node.props || {}
     
     // Extract spacing properties (like CSS)
+    // Padding can be in props.padding or props.style.padding
     const margin = this.parseSpacing(props.margin, 0)
-    const padding = this.parseSpacing(props.padding, 0) 
-    const border = props.border ? 1 : 0
+    const padding = this.parseSpacing(props.style?.padding || props.padding, 0) 
+    const border = (props.style?.border || props.border) ? 1 : 0
     
     // Calculate available space after margins
     const marginBox: Box = {
@@ -61,16 +62,16 @@ export class LayoutEngine extends EventEmitter {
     const paddingBox: Box = {
       x: borderBox.x + border,
       y: borderBox.y + border,
-      width: borderBox.width - (border * 2),
-      height: borderBox.height - (border * 2)
+      width: Math.max(0, borderBox.width - (border * 2)),
+      height: Math.max(0, borderBox.height - (border * 2))
     }
     
     // Content box is inside padding
     const contentBox: Box = {
       x: paddingBox.x + padding.left,
       y: paddingBox.y + padding.top,
-      width: paddingBox.width - padding.left - padding.right,
-      height: paddingBox.height - padding.top - padding.bottom
+      width: Math.max(0, paddingBox.width - padding.left - padding.right),
+      height: Math.max(0, paddingBox.height - padding.top - padding.bottom)
     }
     
     // Store computed layout
@@ -299,7 +300,9 @@ export class LayoutEngine extends EventEmitter {
         } else if (child.props?.height) {
           fixedHeight += child.props.height
         } else {
-          fixedHeight += 3 // Default height
+          // Auto height: calculate based on content + padding + border
+          const autoHeight = this.calculateAutoHeight(child)
+          fixedHeight += autoHeight
         }
       })
       
@@ -313,7 +316,7 @@ export class LayoutEngine extends EventEmitter {
         } else if (child.props?.height) {
           childHeight = child.props.height
         } else {
-          childHeight = 3
+          childHeight = this.calculateAutoHeight(child)
         }
         
         const childBox: Box = {
@@ -394,6 +397,46 @@ export class LayoutEngine extends EventEmitter {
       
       this.computeLayout(child, childBox)
     })
+  }
+  
+  private calculateAutoHeight(node: LayoutNode): number {
+    // Calculate auto height based on content type and styling
+    const props = node.props || {}
+    const style = props.style || {}
+    const padding = this.parseSpacing(style.padding || props.padding, 0)
+    const border = (style.border || props.border) ? 1 : 0
+    
+    let contentHeight = 1 // Default minimum content height
+    
+    // Determine content height based on type
+    switch (node.type) {
+      case 'input':
+        contentHeight = 1 // Input always needs 1 line
+        break
+      case 'container':
+      case 'text':
+        // Count lines in template/text
+        if (props.template || props.text) {
+          const text = props.template || props.text || ''
+          contentHeight = (text.match(/\n/g) || []).length + 1
+        }
+        break
+      case 'buttonGroup':
+        contentHeight = 1 // Buttons in a row
+        break
+      case 'list':
+        contentHeight = 10 // Default list height
+        break
+      default:
+        contentHeight = 3 // Default for unknown types
+    }
+    
+    // Total height = content + padding + border
+    const totalHeight = contentHeight + 
+                       padding.top + padding.bottom + 
+                       (border * 2)
+    
+    return totalHeight
   }
   
   private parseSpacing(value: any, defaultValue: number = 0): { top: number, right: number, bottom: number, left: number } {

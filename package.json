@@ -19,20 +19,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "example:simple": "tsx examples/simple.ts",
-    "example:form": "tsx examples/form.ts",
-    "example:components": "tsx examples/components.ts",
-    "example:demo": "tsx examples/demo.ts",
-    "example:todo": "tsx examples/todos/TodoApp.ts",
-    "example:todo-simple": "tsx examples/todos/TodoAppSimple.ts",
-    "example:todo-schema": "tsx examples/todos/TodoFromSchema.ts",
-    "example:file-explorer": "tsx examples/file-explorer/FileExplorerFromSchema.ts",
+    "example:todo": "tsx examples/todos/TodoFromSchema.ts",
     "example:dashboard": "tsx examples/dashboard/DashboardFromSchema.ts",
-    "example:dashboard-simple": "tsx examples/dashboard/SimpleDashboard.ts",
-    "example:dashboard-app": "tsx examples/dashboard-app/dashboard.ts",
-    "example:json-editor": "tsx examples/json-editor/config-editor.ts",
-    "example:schema-form": "tsx examples/schema-form/app.ts",
-    "example:meta-app": "tsx examples/meta-app/runtime.ts"
+    "example:json-editor": "tsx examples/json-editor/config-editor.ts"
   },
   "keywords": [
     "tui",

@@ -106,7 +106,7 @@
       },
       "style": {
         "border": "single",
-        "padding": 1
+        "padding": 0
       },
       "events": {
         "onChange": "SET_INPUT",
@@ -168,8 +168,8 @@
     "type": "flexbox",
     "direction": "vertical",
     "children": [
-      { "component": "Header", "height": 4 },
-      { "component": "InputField", "height": 3 },
+      { "component": "Header" },
+      { "component": "InputField" },
       { "component": "TodoList", "flex": 1 },
       { "component": "FilterBar", "height": 3 },
       { "component": "HelpBar", "height": 1 }

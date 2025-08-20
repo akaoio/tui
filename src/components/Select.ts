@@ -59,6 +59,7 @@ export class Select extends Component {
     const selectedOption = this.options[this.selectedIndex];
     const label = selectedOption ? selectedOption.label : 'Select...';
     const width = this.width || 30;
+    const maxLabelWidth = width - 3; // Account for dropdown arrow and space
     
     let text = '';
     
@@ -66,10 +67,18 @@ export class Select extends Component {
       text += color(Color.Cyan);
     }
     
-    text += '▼ ' + label;
+    // Truncate label if too long
+    let displayLabel = label;
+    if (label.length > maxLabelWidth) {
+      displayLabel = label.substring(0, maxLabelWidth - 3) + '...';
+    }
     
-    if (text.length < width) {
-      text += ' '.repeat(width - label.length - 2);
+    text += '▼ ' + displayLabel;
+    
+    // Add padding to clear previous content
+    const textLength = displayLabel.length + 2;
+    if (textLength < width) {
+      text += ' '.repeat(width - textLength);
     }
     
     text += reset();
@@ -103,6 +112,13 @@ export class Select extends Component {
       }
       
       let optionText = option.label;
+      const prefixLength = this.multiple ? 6 : 4; // Length of checkbox/radio + space
+      const maxTextWidth = width - prefixLength - 2; // Account for borders
+      
+      // Truncate option text if too long
+      if (optionText.length > maxTextWidth) {
+        optionText = optionText.substring(0, maxTextWidth - 3) + '...';
+      }
       
       if (option.disabled) {
         optionText = color(Color.BrightBlack) + optionText + reset();

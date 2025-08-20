@@ -72,16 +72,22 @@ export class Input extends Component {
       text += color(Color.BrightBlack);
     }
     
-    const maxWidth = this.width || this.screen.getWidth() - this.x;
+    const maxWidth = this.width || Math.min(40, this.screen.getWidth() - this.x);
     let visibleText = displayText;
     
+    // Improved scrolling logic for long text
     if (displayText.length > maxWidth - 1) {
-      if (this.cursorPosition - this.scrollOffset >= maxWidth - 1) {
-        this.scrollOffset = this.cursorPosition - maxWidth + 2;
-      } else if (this.cursorPosition < this.scrollOffset) {
-        this.scrollOffset = this.cursorPosition;
+      // Keep cursor visible with better scrolling
+      if (this.focused && !isPlaceholder) {
+        if (this.cursorPosition >= this.scrollOffset + maxWidth - 1) {
+          this.scrollOffset = this.cursorPosition - maxWidth + 2;
+        } else if (this.cursorPosition < this.scrollOffset) {
+          this.scrollOffset = this.cursorPosition;
+        }
       }
       visibleText = displayText.substring(this.scrollOffset, this.scrollOffset + maxWidth - 1);
+    } else {
+      this.scrollOffset = 0;
     }
     
     if (this.focused && !isPlaceholder) {
@@ -118,7 +124,9 @@ export class Input extends Component {
   private renderMultiline(): void {
     const boxWidth = this.width || 40;
     const boxHeight = this.height;
+    const contentWidth = boxWidth - 4; // Account for borders and padding
     
+    // Draw box
     this.screen.writeAt(this.x, this.y, '┌' + '─'.repeat(boxWidth - 2) + '┐');
     
     for (let i = 1; i < boxHeight - 1; i++) {
@@ -136,22 +144,43 @@ export class Input extends Component {
       const displayLine = this.password ? '*'.repeat(line.length) : line;
       
       let text = '';
+      let lineScrollOffset = 0;
       
+      // Handle horizontal scrolling per line
       if (this.focused && lineIndex === this.currentLine) {
-        const cursorPos = this.cursorPosition;
-        const before = displayLine.substring(0, cursorPos);
-        const at = displayLine[cursorPos] || ' ';
-        const after = displayLine.substring(cursorPos + 1);
-        text = before + underline(at) + after;
+        // Calculate scroll offset for current line
+        if (this.cursorPosition > contentWidth - 1) {
+          lineScrollOffset = this.cursorPosition - contentWidth + 1;
+        }
+        
+        const visibleLine = displayLine.substring(lineScrollOffset, lineScrollOffset + contentWidth);
+        const adjustedCursorPos = this.cursorPosition - lineScrollOffset;
+        
+        if (adjustedCursorPos >= 0 && adjustedCursorPos <= visibleLine.length) {
+          const before = visibleLine.substring(0, adjustedCursorPos);
+          const at = visibleLine[adjustedCursorPos] || ' ';
+          const after = visibleLine.substring(adjustedCursorPos + 1);
+          text = before + underline(at) + after;
+        } else {
+          text = visibleLine;
+        }
       } else {
-        text = displayLine;
+        // For non-focused lines, truncate with ellipsis if too long
+        if (displayLine.length > contentWidth) {
+          text = displayLine.substring(0, contentWidth - 3) + '...';
+        } else {
+          text = displayLine;
+        }
       }
       
-      if (text.length > boxWidth - 2) {
-        text = text.substring(0, boxWidth - 2);
+      // Ensure text doesn't overflow
+      if (text.length > contentWidth) {
+        text = text.substring(0, contentWidth);
       }
       
-      this.screen.writeAt(this.x + 1, this.y + i + 1, text + ' '.repeat(boxWidth - 2 - text.length));
+      // Write with padding to clear previous content
+      const padding = ' '.repeat(Math.max(0, contentWidth - text.length));
+      this.screen.writeAt(this.x + 2, this.y + i + 1, text + padding);
     }
   }
 
