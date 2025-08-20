@@ -43,8 +43,11 @@ export class Checkbox extends Component {
   handleKey(key: Key, _event: KeyEvent): void {
     if (!this.focused || this.disabled) return;
 
-    if (key === Key.SPACE || key === Key.ENTER) {
+    if (key === Key.SPACE) {
       this.toggle();
+    } else if (key === Key.ENTER) {
+      this.toggle();
+      this.emit('submit', this.checked);
     }
   }
 

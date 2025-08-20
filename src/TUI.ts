@@ -153,21 +153,33 @@ export class TUI {
      * Confirm with yes/no
      */
     async confirm(label: string, defaultValue = false): Promise<boolean> {
-        const checkbox = new Checkbox(this.screen, this.keyboard, {
-            label,
-            checked: defaultValue
+        const defaultStr = defaultValue ? 'Y/n' : 'y/N'
+        const input = new Input(this.screen, this.keyboard, {
+            placeholder: `${label} [${defaultStr}]`,
+            value: ''
         })
         
         return new Promise((resolve) => {
-            checkbox.on('submit', (value) => {
-                checkbox.clear()
+            input.on('submit', (value) => {
+                input.clear()
                 this.keyboard.stop()
-                resolve(value as boolean)
+                
+                const answer = (value as string).toLowerCase().trim()
+                if (answer === '') {
+                    resolve(defaultValue)
+                } else if (answer === 'y' || answer === 'yes') {
+                    resolve(true)
+                } else if (answer === 'n' || answer === 'no') {
+                    resolve(false)
+                } else {
+                    // Invalid input, use default
+                    resolve(defaultValue)
+                }
             })
             
             this.keyboard.start()
-            checkbox.focus()
-            checkbox.render()
+            input.focus()
+            input.render()
         })
     }
     
