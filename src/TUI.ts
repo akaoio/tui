@@ -8,6 +8,7 @@ import { Spinner } from './components/Spinner'
 import { bold, dim } from './utils/styles'
 import { drawBox, BoxStyles } from './utils/styles'
 import { reset } from './utils/colors'
+import * as readline from 'readline'
 
 export interface TUIOptions {
     title?: string
@@ -153,33 +154,30 @@ export class TUI {
      * Confirm with yes/no
      */
     async confirm(label: string, defaultValue = false): Promise<boolean> {
-        const defaultStr = defaultValue ? 'Y/n' : 'y/N'
-        const input = new Input(this.screen, this.keyboard, {
-            placeholder: `${label} [${defaultStr}]`,
-            value: ''
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
         })
         
         return new Promise((resolve) => {
-            input.on('submit', (value) => {
-                input.clear()
-                this.keyboard.stop()
+            const defaultStr = defaultValue ? 'Y/n' : 'y/N'
+            const prompt = `${label} [${defaultStr}] `
+            
+            rl.question(prompt, (answer) => {
+                rl.close()
                 
-                const answer = (value as string).toLowerCase().trim()
-                if (answer === '') {
+                const normalized = answer.toLowerCase().trim()
+                if (normalized === '') {
                     resolve(defaultValue)
-                } else if (answer === 'y' || answer === 'yes') {
+                } else if (normalized === 'y' || normalized === 'yes') {
                     resolve(true)
-                } else if (answer === 'n' || answer === 'no') {
+                } else if (normalized === 'n' || normalized === 'no') {
                     resolve(false)
                 } else {
                     // Invalid input, use default
                     resolve(defaultValue)
                 }
             })
-            
-            this.keyboard.start()
-            input.focus()
-            input.render()
         })
     }
     
