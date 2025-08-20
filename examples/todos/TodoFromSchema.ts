@@ -81,53 +81,12 @@ class SchemaBasedTodoApp {
       this.saveTodos()
     })
     
-    // Handle keyboard shortcuts for quick actions
-    this.renderer.on('keypress', (char: string, key: any) => {
-      const store = (global as any).$store
-      if (!store) return
-      
-      // Quick filter shortcuts
-      if (char === '1') {
-        store.commit('SET_FILTER', 'all')
-        this.renderer.render()
-      } else if (char === '2') {
-        store.commit('SET_FILTER', 'active')
-        this.renderer.render()
-      } else if (char === '3') {
-        store.commit('SET_FILTER', 'completed')
-        this.renderer.render()
-      }
-      
-      // Delete with 'd'
-      if (char === 'd') {
-        const filtered = store.getters.filteredTodos || []
-        const selected = filtered[store.state.selectedIndex]
-        if (selected) {
-          store.commit('DELETE_TODO', selected.id)
-          this.saveTodos()
-          this.renderer.render()
-        }
-      }
-      
-      // Toggle with space
-      if (char === ' ') {
-        const filtered = store.getters.filteredTodos || []
-        const selected = filtered[store.state.selectedIndex]
-        if (selected) {
-          store.commit('TOGGLE_TODO', selected.id)
-          this.saveTodos()
-          this.renderer.render()
-        }
-      }
-      
-      // Navigation
-      if (key?.name === 'up') {
-        store.commit('MOVE_SELECTION', -1)
-        this.renderer.render()
-      } else if (key?.name === 'down') {
-        store.commit('MOVE_SELECTION', 1)
-        this.renderer.render()
-      }
+    // Keyboard shortcuts are now handled by SchemaRenderer internally
+    // based on the schema definition - no duplicate handlers needed
+    
+    // Just listen for state changes to save todos
+    this.renderer.on('state-change', () => {
+      this.saveTodos()
     })
   }
   

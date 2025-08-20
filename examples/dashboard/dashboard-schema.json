@@ -1,0 +1,324 @@
+{
+  "name": "SystemDashboard",
+  "version": "1.0.0",
+  "description": "Real-time System Monitoring Dashboard",
+  
+  "store": {
+    "$id": "DashboardStore",
+    "type": "object",
+    "properties": {
+      "cpuUsage": {
+        "type": "number",
+        "default": 0,
+        "description": "CPU usage percentage"
+      },
+      "memoryUsage": {
+        "type": "number", 
+        "default": 0,
+        "description": "Memory usage percentage"
+      },
+      "diskUsage": {
+        "type": "number",
+        "default": 0,
+        "description": "Disk usage percentage"
+      },
+      "processes": {
+        "type": "array",
+        "default": [],
+        "description": "Top processes by CPU"
+      },
+      "networkStats": {
+        "type": "object",
+        "default": { "rx": 0, "tx": 0 },
+        "description": "Network statistics"
+      },
+      "systemInfo": {
+        "type": "object",
+        "default": {},
+        "description": "System information"
+      },
+      "cpuHistory": {
+        "type": "array",
+        "default": [],
+        "description": "CPU usage history"
+      },
+      "memoryHistory": {
+        "type": "array",
+        "default": [],
+        "description": "Memory usage history"
+      },
+      "updateInterval": {
+        "type": "number",
+        "default": 1000,
+        "description": "Update interval in ms"
+      },
+      "selectedPanel": {
+        "type": "string",
+        "default": "overview",
+        "description": "Currently selected panel"
+      }
+    },
+    
+    "getters": {
+      "cpuBar": {
+        "handler": "function() { const width = 30; const filled = Math.round(this.state.cpuUsage * width / 100); return '█'.repeat(filled) + '░'.repeat(width - filled); }"
+      },
+      "memoryBar": {
+        "handler": "function() { const width = 30; const filled = Math.round(this.state.memoryUsage * width / 100); return '█'.repeat(filled) + '░'.repeat(width - filled); }"
+      },
+      "diskBar": {
+        "handler": "function() { const width = 30; const filled = Math.round(this.state.diskUsage * width / 100); return '█'.repeat(filled) + '░'.repeat(width - filled); }"
+      },
+      "cpuColor": {
+        "handler": "function() { const usage = this.state.cpuUsage; if (usage > 80) return 'red'; if (usage > 60) return 'yellow'; return 'green'; }"
+      },
+      "memoryColor": {
+        "handler": "function() { const usage = this.state.memoryUsage; if (usage > 80) return 'red'; if (usage > 60) return 'yellow'; return 'green'; }"
+      },
+      "topProcesses": {
+        "handler": "function() { return this.state.processes.slice(0, 5); }"
+      },
+      "cpuSparkline": {
+        "handler": "function() { const history = this.state.cpuHistory.slice(-20); const chars = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█']; return history.map(v => chars[Math.floor(v * 7 / 100)]).join(''); }"
+      },
+      "memorySparkline": {
+        "handler": "function() { const history = this.state.memoryHistory.slice(-20); const chars = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█']; return history.map(v => chars[Math.floor(v * 7 / 100)]).join(''); }"
+      }
+    },
+    
+    "mutations": {
+      "UPDATE_CPU": {
+        "handler": "function(state, value) { state.cpuUsage = value; state.cpuHistory.push(value); if (state.cpuHistory.length > 60) state.cpuHistory.shift(); }"
+      },
+      "UPDATE_MEMORY": {
+        "handler": "function(state, value) { state.memoryUsage = value; state.memoryHistory.push(value); if (state.memoryHistory.length > 60) state.memoryHistory.shift(); }"
+      },
+      "UPDATE_DISK": {
+        "handler": "function(state, value) { state.diskUsage = value; }"
+      },
+      "UPDATE_PROCESSES": {
+        "handler": "function(state, processes) { state.processes = processes; }"
+      },
+      "UPDATE_NETWORK": {
+        "handler": "function(state, stats) { state.networkStats = stats; }"
+      },
+      "UPDATE_SYSTEM_INFO": {
+        "handler": "function(state, info) { state.systemInfo = info; }"
+      },
+      "SELECT_PANEL": {
+        "handler": "function(state, panel) { state.selectedPanel = panel; }"
+      }
+    },
+    
+    "actions": {
+      "updateStats": {
+        "handler": "async function({ commit }) { const os = require('os'); const totalMem = os.totalmem(); const freeMem = os.freemem(); const cpuUsage = Math.random() * 100; const memUsage = ((totalMem - freeMem) / totalMem) * 100; const diskUsage = Math.random() * 100; commit('UPDATE_CPU', cpuUsage); commit('UPDATE_MEMORY', memUsage); commit('UPDATE_DISK', diskUsage); const procs = Array.from({length: 10}, (_, i) => ({ pid: 1000 + i, name: ['node', 'chrome', 'firefox', 'code', 'terminal'][i % 5], cpu: Math.random() * 50, memory: Math.random() * 20 })).sort((a, b) => b.cpu - a.cpu); commit('UPDATE_PROCESSES', procs); commit('UPDATE_NETWORK', { rx: Math.random() * 1000, tx: Math.random() * 1000 }); commit('UPDATE_SYSTEM_INFO', { hostname: os.hostname(), platform: os.platform(), arch: os.arch(), uptime: os.uptime(), cpus: os.cpus().length }); }"
+      },
+      "startMonitoring": {
+        "handler": "function({ dispatch, state }) { dispatch('updateStats'); return setInterval(() => dispatch('updateStats'), state.updateInterval); }"
+      }
+    }
+  },
+  
+  "components": {
+    "CPUPanel": {
+      "$id": "CPUPanel",
+      "type": "panel",
+      "props": {
+        "title": "CPU Usage",
+        "border": true,
+        "width": 40,
+        "height": 6,
+        "children": [
+          {
+            "type": "text",
+            "props": {
+              "text": "CPU: {{store.state.cpuUsage.toFixed(1)}}%",
+              "style": { "color": "{{store.getters.cpuColor}}", "bold": true }
+            }
+          },
+          {
+            "type": "text",
+            "props": {
+              "text": "{{store.getters.cpuBar}}",
+              "style": { "color": "{{store.getters.cpuColor}}" }
+            }
+          },
+          {
+            "type": "text",
+            "props": {
+              "text": "History: {{store.getters.cpuSparkline}}",
+              "style": { "color": "cyan" }
+            }
+          }
+        ]
+      }
+    },
+    
+    "MemoryPanel": {
+      "$id": "MemoryPanel",
+      "type": "panel",
+      "props": {
+        "title": "Memory Usage",
+        "border": true,
+        "width": 40,
+        "height": 6,
+        "children": [
+          {
+            "type": "text",
+            "props": {
+              "text": "Memory: {{store.state.memoryUsage.toFixed(1)}}%",
+              "style": { "color": "{{store.getters.memoryColor}}", "bold": true }
+            }
+          },
+          {
+            "type": "text",
+            "props": {
+              "text": "{{store.getters.memoryBar}}",
+              "style": { "color": "{{store.getters.memoryColor}}" }
+            }
+          },
+          {
+            "type": "text",
+            "props": {
+              "text": "History: {{store.getters.memorySparkline}}",
+              "style": { "color": "magenta" }
+            }
+          }
+        ]
+      }
+    },
+    
+    "ProcessPanel": {
+      "$id": "ProcessPanel",
+      "type": "panel",
+      "props": {
+        "title": "Top Processes",
+        "border": true,
+        "width": 40,
+        "height": 8,
+        "children": {
+          "type": "list",
+          "props": {
+            "items": "{{store.getters.topProcesses}}",
+            "renderItem": "function(proc) { return proc.pid + ' ' + proc.name + ' CPU:' + proc.cpu.toFixed(1) + '% MEM:' + proc.memory.toFixed(1) + '%'; }"
+          }
+        }
+      }
+    },
+    
+    "NetworkPanel": {
+      "$id": "NetworkPanel",
+      "type": "panel",
+      "props": {
+        "title": "Network",
+        "border": true,
+        "width": 40,
+        "height": 4,
+        "children": [
+          {
+            "type": "text",
+            "props": {
+              "text": "↓ RX: {{(store.state.networkStats.rx/1024).toFixed(2)}} KB/s",
+              "style": { "color": "green" }
+            }
+          },
+          {
+            "type": "text",
+            "props": {
+              "text": "↑ TX: {{(store.state.networkStats.tx/1024).toFixed(2)}} KB/s",
+              "style": { "color": "blue" }
+            }
+          }
+        ]
+      }
+    },
+    
+    "SystemInfoPanel": {
+      "$id": "SystemInfoPanel",
+      "type": "panel",
+      "props": {
+        "title": "System Info",
+        "border": true,
+        "width": 40,
+        "height": 6,
+        "children": [
+          {
+            "type": "text",
+            "props": {
+              "text": "Host: {{store.state.systemInfo.hostname}}",
+              "style": { "color": "yellow" }
+            }
+          },
+          {
+            "type": "text",
+            "props": {
+              "text": "Platform: {{store.state.systemInfo.platform}} ({{store.state.systemInfo.arch}})",
+              "style": { "color": "cyan" }
+            }
+          },
+          {
+            "type": "text",
+            "props": {
+              "text": "CPUs: {{store.state.systemInfo.cpus}}",
+              "style": { "color": "green" }
+            }
+          },
+          {
+            "type": "text",
+            "props": {
+              "text": "Uptime: {{Math.floor(store.state.systemInfo.uptime/3600)}}h {{Math.floor((store.state.systemInfo.uptime%3600)/60)}}m",
+              "style": { "color": "magenta" }
+            }
+          }
+        ]
+      }
+    },
+    
+    "StatusBar": {
+      "$id": "StatusBar",
+      "type": "text",
+      "props": {
+        "text": "Tab: Switch Panels | R: Refresh | Q: Quit | Update: {{store.state.updateInterval}}ms",
+        "style": { "color": "gray", "dim": true }
+      }
+    }
+  },
+  
+  "screens": {
+    "main": {
+      "$id": "MainScreen",
+      "type": "grid",
+      "props": {
+        "rows": 3,
+        "cols": 2,
+        "gap": 1,
+        "children": [
+          { "$ref": "#/components/CPUPanel" },
+          { "$ref": "#/components/MemoryPanel" },
+          { "$ref": "#/components/ProcessPanel" },
+          { "$ref": "#/components/NetworkPanel" },
+          { "$ref": "#/components/SystemInfoPanel" },
+          { "$ref": "#/components/StatusBar" }
+        ]
+      }
+    }
+  },
+  
+  "main": {
+    "$ref": "#/screens/main"
+  },
+  
+  "keybindings": {
+    "tab": "function() { const panels = ['overview', 'processes', 'network']; const current = this.store.state.selectedPanel; const next = panels[(panels.indexOf(current) + 1) % panels.length]; this.store.commit('SELECT_PANEL', next); }",
+    "r": "store.dispatch('updateStats')",
+    "q": "process.exit(0)",
+    "1": "store.commit('SELECT_PANEL', 'overview')",
+    "2": "store.commit('SELECT_PANEL', 'processes')",
+    "3": "store.commit('SELECT_PANEL', 'network')"
+  },
+  
+  "hooks": {
+    "onMount": "store.dispatch('startMonitoring')"
+  }
+}

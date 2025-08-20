@@ -1,13 +1,17 @@
 # @akaoio/tui
 
-A modern, lightweight Terminal UI framework for Node.js applications. Build beautiful command-line interfaces with keyboard navigation, forms, and interactive components.
+🎨 A modern, zero-dependency Terminal UI framework for Node.js with TypeScript support and schema-driven UI generation.
 
-[![npm version](https://badge.fury.io/js/@akaoio%2Ftui.svg)](https://www.npmjs.com/package/@akaoio/tui)
+[![npm version](https://img.shields.io/npm/v/@akaoio/tui.svg)](https://www.npmjs.com/package/@akaoio/tui)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 
 ## ✨ Features
 
-- 🎯 **Simple & Intuitive API** - Get started in minutes with clean, readable code
+- 🚀 **Zero Dependencies** - Pure Node.js/TypeScript implementation
+- 📝 **Schema-Driven UI** - Define entire UIs with JSON schemas
+- 🎯 **Type-Safe** - Full TypeScript support with strict typing
 - ⌨️ **Full Keyboard Navigation** - Arrow keys, Tab, Enter, Escape, and more
 - 🧩 **Rich Component Library** - Input, Select, Checkbox, Radio, Spinner, ProgressBar, Forms
 - 🎨 **Flexible Styling** - Colors, borders, text styles with ANSI escape codes

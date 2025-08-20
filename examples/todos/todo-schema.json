@@ -155,7 +155,7 @@
     "HelpBar": {
       "$id": "HelpBar",
       "type": "text",
-      "template": "[Tab] Focus | [Space] Toggle | [d] Delete | [↑↓] Navigate | [1-3] Filter | [q] Quit",
+      "template": "[a] Add | [e] Edit | [Space] Toggle | [d] Delete | [↑↓] Navigate | [1-3] Filter | [Tab] Focus | [q] Quit",
       "style": {
         "background": "#222",
         "color": "yellow",

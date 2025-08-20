@@ -1,10 +1,10 @@
 # CLAUDE.md
 
-This file provides guidance to Claude (claude.ai) and other AI assistants when working with the @akaoio/tui codebase.
+This file provides comprehensive guidance to Claude (claude.ai) and other AI assistants when working with the @akaoio/tui codebase. Updated: December 2024
 
 ## Project Overview
 
-**@akaoio/tui** is a modern Terminal UI framework for Node.js, built with TypeScript. It provides a simple and practical API for creating interactive command-line interfaces with keyboard navigation, forms, and various UI components.
+**@akaoio/tui** is a modern, zero-dependency Terminal UI framework for Node.js with TypeScript. It provides both component-based and schema-driven approaches for creating interactive command-line interfaces with full keyboard navigation, state management, and rich UI components.
 
 ### Key Design Principles
 1. **Simplicity First** - Clean, intuitive API that's easy to understand
@@ -18,22 +18,31 @@ This file provides guidance to Claude (claude.ai) and other AI assistants when w
 ### Directory Structure
 ```
 src/
-├── core/           # Core functionality
-│   ├── keyboard.ts # Keyboard input handling
-│   └── screen.ts   # Terminal output management
-├── components/     # UI components
-│   ├── Component.ts    # Base component class
-│   ├── Input.ts        # Text input field
-│   ├── Select.ts       # Dropdown selection
-│   ├── Checkbox.ts     # Toggle checkbox
-│   ├── Radio.ts        # Radio button group
-│   ├── Spinner.ts      # Loading indicator
-│   ├── ProgressBar.ts  # Progress visualization
-│   └── Form.ts         # Form container
-├── utils/          # Utility functions
-│   ├── colors.ts   # ANSI color helpers
-│   └── styles.ts   # Text styling and box drawing
-└── index.ts        # Main exports
+├── core/                  # Core functionality
+│   ├── ScreenManager.ts  # Singleton terminal output management
+│   ├── KeyboardManager.ts # Keyboard input handling
+│   ├── SchemaRenderer.ts # Schema-driven UI rendering
+│   ├── LayoutEngine.ts   # CSS-like box model layout
+│   ├── StateManager.ts   # Reactive state management
+│   ├── MetaSchema.ts     # Schema validation engine
+│   └── VirtualCursor.ts  # Virtual cursor system
+├── components/           # UI components
+│   ├── Component.ts      # Base component class
+│   ├── Input.ts          # Text input field
+│   ├── Select.ts         # Dropdown selection
+│   ├── Checkbox.ts       # Toggle checkbox
+│   ├── Radio.ts          # Radio button group
+│   ├── List.ts           # Scrollable list
+│   ├── Table.ts          # Data table
+│   ├── Spinner.ts        # Loading indicator
+│   ├── ProgressBar.ts    # Progress visualization
+│   ├── Form.ts           # Form container
+│   └── ConfirmPrompt.ts  # Confirmation dialog
+├── utils/                # Utility functions
+│   ├── colors.ts         # ANSI color helpers
+│   ├── styles.ts         # Text styling and box drawing
+│   └── positioning.ts    # Layout calculations
+└── index.ts              # Main exports
 ```
 
 ### Core Modules

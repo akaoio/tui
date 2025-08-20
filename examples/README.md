@@ -1,129 +1,118 @@
 # TUI Examples
 
-This directory contains examples demonstrating how to use the @akaoio/tui library.
+This directory contains example applications demonstrating the capabilities of the @akaoio/tui library.
+
+## Available Examples
+
+### 1. Todo Application (Schema-based)
+**Location:** `todos/`
+- `TodoFromSchema.ts` - Todo app generated from JSON schema
+- `todo-schema.json` - Schema definition for the todo app
+- `todos.json` - Data storage file
+
+**Run:** `npm run example:todos`
+
+Demonstrates:
+- Schema-driven UI generation
+- Dynamic component creation
+- State management
+- CRUD operations
+
+### 2. Dashboard Application
+**Location:** `dashboard/`
+- `DashboardFromSchema.ts` - Dashboard generated from JSON schema
+- `dashboard-schema.json` - Schema definition for the dashboard
+
+**Run:** `npm run example:dashboard`
+
+Demonstrates:
+- Complex layout from schema
+- Multiple component types
+- Real-time data visualization
+- System monitoring UI
+
+### 3. JSON Configuration Editor
+**Location:** `json-editor/`
+- `config-editor.ts` - Interactive JSON configuration editor
+- `sample-config.json` - Sample configuration file
+
+**Run:** `npm run example:json-editor`
+
+Demonstrates:
+- JSON file editing
+- Nested object navigation
+- Type-safe value editing
+- File persistence
 
 ## Running Examples
 
-Make sure to build the library first:
+To run any example, use the following command from the project root:
+
 ```bash
-npm run build
+npm run example:<name>
 ```
 
-Then run any example:
+For example:
 ```bash
-npm run example:simple
-npm run example:form
-npm run example:components
+npm run example:todos       # Run todo application
+npm run example:dashboard   # Run dashboard
+npm run example:json-editor  # Run JSON editor
 ```
 
-Or run directly with tsx:
-```bash
-npx tsx examples/simple.ts
-npx tsx examples/form.ts
-npx tsx examples/components.ts
+## Schema-Driven Development
+
+The schema-based examples use JSON schemas to define UI structure. This approach offers:
+- Declarative UI definition
+- Easy customization without code changes
+- Consistent component configuration
+- Reusable UI patterns
+
+Example schema structure:
+```json
+{
+  "title": "Application Title",
+  "components": [
+    {
+      "type": "input",
+      "id": "name",
+      "label": "Name",
+      "validation": {
+        "required": true
+      }
+    }
+  ]
+}
 ```
 
-## Examples Overview
+## Creating Your Own Examples
 
-### simple.ts
-Basic input field example with validation. Shows how to:
-- Create a screen and keyboard handler
-- Use the Input component
-- Add validation
-- Handle submit events
+To create a new example:
 
-### form.ts
-Complete form example with multiple components. Demonstrates:
-- Creating a form with multiple fields
-- Using Input, Select, Radio, and Checkbox components
-- Form submission and cancellation
-- Tab navigation between fields
+1. Create a new directory or file in `examples/`
+2. Import components from '../src'
+3. Add a script in package.json:
+   ```json
+   "example:myexample": "tsx examples/myexample.ts"
+   ```
 
-### components.ts
-Interactive demo of all components. Shows:
-- Spinner with different styles
-- Progress bar with live updates
-- Select dropdown with scrolling
-- Checkboxes with state management
-- Radio button groups
-- Component focus management
+## Common Patterns
 
-## Creating Your Own TUI Application
+All examples follow similar initialization patterns:
 
 ```typescript
-import { Screen, Keyboard, Input } from '@akaoio/tui';
+import { Screen, Keyboard, SchemaRenderer } from '../src';
 
-// 1. Initialize screen and keyboard
+// Initialize core systems
 const screen = new Screen();
 const keyboard = new Keyboard();
 
-// 2. Create your components
-const input = new Input(screen, keyboard, {
-  x: 0,
-  y: 5,
-  placeholder: 'Type here...'
+// For schema-based apps
+const renderer = new SchemaRenderer(schema, screen, keyboard);
+renderer.render();
+
+// Handle cleanup
+process.on('exit', () => {
+  keyboard.stop();
+  screen.cleanup();
 });
-
-// 3. Set up event handlers
-input.on('submit', (value) => {
-  console.log('Submitted:', value);
-});
-
-// 4. Start keyboard listener
-keyboard.start();
-
-// 5. Render components
-input.focus();
-input.render();
-```
-
-## Component Templates
-
-### Basic Input with Validation
-```typescript
-const emailInput = new Input(screen, keyboard, {
-  placeholder: 'Enter email',
-  validator: (value) => {
-    if (!value.includes('@')) {
-      return 'Invalid email';
-    }
-    return null;
-  }
-});
-```
-
-### Multi-select Dropdown
-```typescript
-const select = new Select(screen, keyboard, {
-  multiple: true,
-  options: [
-    { label: 'Option 1', value: 1 },
-    { label: 'Option 2', value: 2 }
-  ]
-});
-```
-
-### Loading Spinner
-```typescript
-const spinner = new Spinner(screen, keyboard, {
-  text: 'Processing...',
-  style: 'dots'
-});
-
-spinner.start();
-// ... async operation
-spinner.succeed('Done!');
-```
-
-### Progress Tracking
-```typescript
-const progress = new ProgressBar(screen, keyboard, {
-  total: 100,
-  showPercentage: true
-});
-
-for (let i = 0; i <= 100; i++) {
-  progress.setProgress(i);
-  await sleep(50);
-}
 ```
