@@ -53,12 +53,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/akaoio/tui.git"
+    "url": "https://github.com/akaoagent/tui.git"
   },
   "bugs": {
-    "url": "https://github.com/akaoio/tui/issues"
+    "url": "https://github.com/akaoagent/tui/issues"
   },
-  "homepage": "https://github.com/akaoio/tui#readme",
+  "homepage": "https://github.com/akaoagent/tui#readme",
   "engines": {
     "node": ">=14.0.0"
   },

@@ -1,8 +1,5 @@
 node_modules
 dist
-example
-copywasm.bat
-d.md
 coverage
 *.log
 .DS_Store
@@ -10,4 +7,9 @@ coverage
 *.swo
 .vscode
 .idea
+.env
+.env.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
