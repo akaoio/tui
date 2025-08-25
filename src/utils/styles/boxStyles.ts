@@ -1,0 +1,73 @@
+/**
+ * Box style definitions
+ */
+
+import { BoxStyle } from './types';
+
+export const BoxStyles = {
+  Single: {
+    topLeft: '┌',
+    topRight: '┐',
+    bottomLeft: '└',
+    bottomRight: '┘',
+    horizontal: '─',
+    vertical: '│',
+    cross: '┼',
+    horizontalDown: '┬',
+    horizontalUp: '┴',
+    verticalLeft: '┤',
+    verticalRight: '├',
+  },
+  Double: {
+    topLeft: '╔',
+    topRight: '╗',
+    bottomLeft: '╚',
+    bottomRight: '╝',
+    horizontal: '═',
+    vertical: '║',
+    cross: '╬',
+    horizontalDown: '╦',
+    horizontalUp: '╩',
+    verticalLeft: '╣',
+    verticalRight: '╠',
+  },
+  Rounded: {
+    topLeft: '╭',
+    topRight: '╮',
+    bottomLeft: '╰',
+    bottomRight: '╯',
+    horizontal: '─',
+    vertical: '│',
+    cross: '┼',
+    horizontalDown: '┬',
+    horizontalUp: '┴',
+    verticalLeft: '┤',
+    verticalRight: '├',
+  },
+  Bold: {
+    topLeft: '┏',
+    topRight: '┓',
+    bottomLeft: '┗',
+    bottomRight: '┛',
+    horizontal: '━',
+    vertical: '┃',
+    cross: '╋',
+    horizontalDown: '┳',
+    horizontalUp: '┻',
+    verticalLeft: '┫',
+    verticalRight: '┣',
+  },
+  ASCII: {
+    topLeft: '+',
+    topRight: '+',
+    bottomLeft: '+',
+    bottomRight: '+',
+    horizontal: '-',
+    vertical: '|',
+    cross: '+',
+    horizontalDown: '+',
+    horizontalUp: '+',
+    verticalLeft: '+',
+    verticalRight: '+',
+  },
+} as const;

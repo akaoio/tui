@@ -228,7 +228,7 @@ exec ${process.execPath} ${path.join(config.root, mainFile)} 2>&1`
     removeCronJob(config: any) {
         try {
             const currentCron = execSync('crontab -l', { encoding: 'utf8' })
-            const lines = currentCron.split('\n').filter(line => !line.includes(config.root))
+            const lines = currentCron.split('\n').filter((line: any) => !line.includes(config.root))
             const newCron = lines.join('\n')
             const tmpFile = path.join(os.tmpdir(), `cron-${Date.now()}`)
             fs.writeFileSync(tmpFile, newCron)

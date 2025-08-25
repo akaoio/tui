@@ -20,6 +20,8 @@ export const isWindows = (): boolean => os.platform() === 'win32'
 export const isMac = (): boolean => os.platform() === 'darwin'
 export const isLinux = (): boolean => os.platform() === 'linux'
 
+export const platform = (): string => os.platform()
+
 export const hasSudo = (): boolean => {
     if (isWindows()) return false
     if (isTermux()) return false

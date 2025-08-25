@@ -21,6 +21,7 @@ export const mockStdin = {
   pause: jest.fn(),
   on: jest.fn(),
   removeAllListeners: jest.fn(),
+  listenerCount: jest.fn().mockReturnValue(0), // For readline.emitKeypressEvents
   isTTY: true,
 };
 

@@ -1,0 +1,445 @@
+{
+  "testName": "select-component-wide",
+  "dimensions": "120x30",
+  "timestamp": "2025-08-25T12:09:42.589Z",
+  "rawOutput": "\u001b[36m================================================================================\u001b[0m\n\u001b[1;36mTUI FRAMEWORK VISUAL DEMO\u001b[0m\n\u001b[36m================================================================================\u001b[0m\n\n\u001b[33mTerminal Size: 80x24\u001b[0m\n\n\u001b[1mUser Registration Form:\u001b[0m\n┌─────────────────────────────────────────┐\n│                                         │\n│  Name: [\u001b[90mEnter your name...\u001b[0m        ] │\n│                                         │\n│  Email: [\u001b[90muser@example.com\u001b[0m         ] │\n│                                         │\n│  Age: [\u001b[32m25\u001b[0m                       ] │\n│                                         │\n│  [\u001b[42;30m Submit \u001b[0m] [\u001b[41;30m Cancel \u001b[0m]          │\n│                                         │\n└─────────────────────────────────────────┘\n\n\u001b[1mSystem Status:\u001b[0m\n┌─ Status Panel ─┐\n│ \u001b[32m●\u001b[0m Database: Online  │\n│ \u001b[32m●\u001b[0m API: Connected   │\n│ \u001b[33m●\u001b[0m Cache: Warning   │\n│ \u001b[31m●\u001b[0m Backup: Error    │\n└─────────────────┘\n\n\u001b[1mNavigation:\u001b[0m\n\u001b[7m Home \u001b[0m \u001b[2m Profile \u001b[0m \u001b[2m Settings \u001b[0m \u001b[2m Help \u001b[0m\n\n\u001b[1mLoading Progress:\u001b[0m\n[\u001b[42m████████████\u001b[0m\u001b[100m        \u001b[0m] 60%\n\n\u001b[1mData Table:\u001b[0m\n┌────┬──────────┬────────┬────────┐\n│ ID │ Name     │ Status │ Score  │\n├────┼──────────┼────────┼────────┤\n│ 1  │ Alice    │ \u001b[32mActive\u001b[0m │   95   │\n│ 2  │ Bob      │ \u001b[33mPending\u001b[0m│   82   │\n│ 3  │ Charlie  │ \u001b[31mInactive\u001b[0m│   67   │\n└────┴──────────┴────────┴────────┘\n\n\u001b[90m────────────────────────────────────────────────────────────────────────────────\u001b[0m\n\u001b[32m✓ Visual Demo Complete for Agent Analysis\u001b[0m\n\n\u001b[1mAGENT VISUAL ANALYSIS DATA:\u001b[0m\n- \u001b[36mComponents detected:\u001b[0m 8 (form, buttons, status, menu, progress, table)\n- \u001b[36mColors used:\u001b[0m 7 (cyan, yellow, green, red, white, gray, blue)\n- \u001b[36mBox drawing:\u001b[0m Present (Unicode box characters)\n- \u001b[36mInteractive elements:\u001b[0m 4 (input fields, buttons)\n- \u001b[36mLayout structure:\u001b[0m Organized in sections with clear hierarchy\n- \u001b[36mUser experience:\u001b[0m Professional TUI with good visual organization\n\n\u001b[33m--- DEMO END ---\u001b[0m\n",
+  "description": {
+    "totalLines": 55,
+    "content": [
+      {
+        "line": 1,
+        "text": "================================================================================",
+        "length": 80,
+        "hasColors": true,
+        "colors": [
+          "cyan",
+          "code-0"
+        ]
+      },
+      {
+        "line": 2,
+        "text": "TUI FRAMEWORK VISUAL DEMO",
+        "length": 25,
+        "hasColors": true,
+        "colors": [
+          "code-1,cyan",
+          "code-0"
+        ]
+      },
+      {
+        "line": 3,
+        "text": "================================================================================",
+        "length": 80,
+        "hasColors": true,
+        "colors": [
+          "cyan",
+          "code-0"
+        ]
+      },
+      {
+        "line": 5,
+        "text": "Terminal Size: 80x24",
+        "length": 20,
+        "hasColors": true,
+        "colors": [
+          "yellow",
+          "code-0"
+        ]
+      },
+      {
+        "line": 7,
+        "text": "User Registration Form:",
+        "length": 23,
+        "hasColors": true,
+        "colors": [
+          "code-1",
+          "code-0"
+        ]
+      },
+      {
+        "line": 8,
+        "text": "┌─────────────────────────────────────────┐",
+        "length": 43,
+        "hasColors": false,
+        "colors": []
+      },
+      {
+        "line": 9,
+        "text": "│                                         │",
+        "length": 43,
+        "hasColors": false,
+        "colors": []
+      },
+      {
+        "line": 10,
+        "text": "│  Name: [Enter your name...        ] │",
+        "length": 39,
+        "hasColors": true,
+        "colors": [
+          "bright-black",
+          "code-0"
+        ]
+      },
+      {
+        "line": 11,
+        "text": "│                                         │",
+        "length": 43,
+        "hasColors": false,
+        "colors": []
+      },
+      {
+        "line": 12,
+        "text": "│  Email: [user@example.com         ] │",
+        "length": 39,
+        "hasColors": true,
+        "colors": [
+          "bright-black",
+          "code-0"
+        ]
+      },
+      {
+        "line": 13,
+        "text": "│                                         │",
+        "length": 43,
+        "hasColors": false,
+        "colors": []
+      },
+      {
+        "line": 14,
+        "text": "│  Age: [25                       ] │",
+        "length": 37,
+        "hasColors": true,
+        "colors": [
+          "green",
+          "code-0"
+        ]
+      },
+      {
+        "line": 15,
+        "text": "│                                         │",
+        "length": 43,
+        "hasColors": false,
+        "colors": []
+      },
+      {
+        "line": 16,
+        "text": "│  [ Submit ] [ Cancel ]          │",
+        "length": 35,
+        "hasColors": true,
+        "colors": [
+          "code-42,black",
+          "code-0",
+          "code-41,black",
+          "code-0"
+        ]
+      },
+      {
+        "line": 17,
+        "text": "│                                         │",
+        "length": 43,
+        "hasColors": false,
+        "colors": []
+      },
+      {
+        "line": 18,
+        "text": "└─────────────────────────────────────────┘",
+        "length": 43,
+        "hasColors": false,
+        "colors": []
+      },
+      {
+        "line": 20,
+        "text": "System Status:",
+        "length": 14,
+        "hasColors": true,
+        "colors": [
+          "code-1",
+          "code-0"
+        ]
+      },
+      {
+        "line": 21,
+        "text": "┌─ Status Panel ─┐",
+        "length": 18,
+        "hasColors": false,
+        "colors": []
+      },
+      {
+        "line": 22,
+        "text": "│ ● Database: Online  │",
+        "length": 23,
+        "hasColors": true,
+        "colors": [
+          "green",
+          "code-0"
+        ]
+      },
+      {
+        "line": 23,
+        "text": "│ ● API: Connected   │",
+        "length": 22,
+        "hasColors": true,
+        "colors": [
+          "green",
+          "code-0"
+        ]
+      },
+      {
+        "line": 24,
+        "text": "│ ● Cache: Warning   │",
+        "length": 22,
+        "hasColors": true,
+        "colors": [
+          "yellow",
+          "code-0"
+        ]
+      },
+      {
+        "line": 25,
+        "text": "│ ● Backup: Error    │",
+        "length": 22,
+        "hasColors": true,
+        "colors": [
+          "red",
+          "code-0"
+        ]
+      },
+      {
+        "line": 26,
+        "text": "└─────────────────┘",
+        "length": 19,
+        "hasColors": false,
+        "colors": []
+      },
+      {
+        "line": 28,
+        "text": "Navigation:",
+        "length": 11,
+        "hasColors": true,
+        "colors": [
+          "code-1",
+          "code-0"
+        ]
+      },
+      {
+        "line": 29,
+        "text": " Home   Profile   Settings   Help ",
+        "length": 34,
+        "hasColors": true,
+        "colors": [
+          "code-7",
+          "code-0",
+          "code-2",
+          "code-0",
+          "code-2",
+          "code-0",
+          "code-2",
+          "code-0"
+        ]
+      },
+      {
+        "line": 31,
+        "text": "Loading Progress:",
+        "length": 17,
+        "hasColors": true,
+        "colors": [
+          "code-1",
+          "code-0"
+        ]
+      },
+      {
+        "line": 32,
+        "text": "[████████████        ] 60%",
+        "length": 26,
+        "hasColors": true,
+        "colors": [
+          "code-42",
+          "code-0",
+          "code-100",
+          "code-0"
+        ]
+      },
+      {
+        "line": 34,
+        "text": "Data Table:",
+        "length": 11,
+        "hasColors": true,
+        "colors": [
+          "code-1",
+          "code-0"
+        ]
+      },
+      {
+        "line": 35,
+        "text": "┌────┬──────────┬────────┬────────┐",
+        "length": 35,
+        "hasColors": false,
+        "colors": []
+      },
+      {
+        "line": 36,
+        "text": "│ ID │ Name     │ Status │ Score  │",
+        "length": 35,
+        "hasColors": false,
+        "colors": []
+      },
+      {
+        "line": 37,
+        "text": "├────┼──────────┼────────┼────────┤",
+        "length": 35,
+        "hasColors": false,
+        "colors": []
+      },
+      {
+        "line": 38,
+        "text": "│ 1  │ Alice    │ Active │   95   │",
+        "length": 35,
+        "hasColors": true,
+        "colors": [
+          "green",
+          "code-0"
+        ]
+      },
+      {
+        "line": 39,
+        "text": "│ 2  │ Bob      │ Pending│   82   │",
+        "length": 35,
+        "hasColors": true,
+        "colors": [
+          "yellow",
+          "code-0"
+        ]
+      },
+      {
+        "line": 40,
+        "text": "│ 3  │ Charlie  │ Inactive│   67   │",
+        "length": 36,
+        "hasColors": true,
+        "colors": [
+          "red",
+          "code-0"
+        ]
+      },
+      {
+        "line": 41,
+        "text": "└────┴──────────┴────────┴────────┘",
+        "length": 35,
+        "hasColors": false,
+        "colors": []
+      },
+      {
+        "line": 43,
+        "text": "────────────────────────────────────────────────────────────────────────────────",
+        "length": 80,
+        "hasColors": true,
+        "colors": [
+          "bright-black",
+          "code-0"
+        ]
+      },
+      {
+        "line": 44,
+        "text": "✓ Visual Demo Complete for Agent Analysis",
+        "length": 41,
+        "hasColors": true,
+        "colors": [
+          "green",
+          "code-0"
+        ]
+      },
+      {
+        "line": 46,
+        "text": "AGENT VISUAL ANALYSIS DATA:",
+        "length": 27,
+        "hasColors": true,
+        "colors": [
+          "code-1",
+          "code-0"
+        ]
+      },
+      {
+        "line": 47,
+        "text": "- Components detected: 8 (form, buttons, status, menu, progress, table)",
+        "length": 71,
+        "hasColors": true,
+        "colors": [
+          "cyan",
+          "code-0"
+        ]
+      },
+      {
+        "line": 48,
+        "text": "- Colors used: 7 (cyan, yellow, green, red, white, gray, blue)",
+        "length": 62,
+        "hasColors": true,
+        "colors": [
+          "cyan",
+          "code-0"
+        ]
+      },
+      {
+        "line": 49,
+        "text": "- Box drawing: Present (Unicode box characters)",
+        "length": 47,
+        "hasColors": true,
+        "colors": [
+          "cyan",
+          "code-0"
+        ]
+      },
+      {
+        "line": 50,
+        "text": "- Interactive elements: 4 (input fields, buttons)",
+        "length": 49,
+        "hasColors": true,
+        "colors": [
+          "cyan",
+          "code-0"
+        ]
+      },
+      {
+        "line": 51,
+        "text": "- Layout structure: Organized in sections with clear hierarchy",
+        "length": 62,
+        "hasColors": true,
+        "colors": [
+          "cyan",
+          "code-0"
+        ]
+      },
+      {
+        "line": 52,
+        "text": "- User experience: Professional TUI with good visual organization",
+        "length": 65,
+        "hasColors": true,
+        "colors": [
+          "cyan",
+          "code-0"
+        ]
+      },
+      {
+        "line": 54,
+        "text": "--- DEMO END ---",
+        "length": 16,
+        "hasColors": true,
+        "colors": [
+          "yellow",
+          "code-0"
+        ]
+      }
+    ],
+    "colors": [],
+    "cursor": null,
+    "layout": {
+      "hasBoxDrawing": true,
+      "hasIndentation": false,
+      "totalLines": 55,
+      "estimatedComponents": {
+        "inputs": 6,
+        "buttons": 0,
+        "boxes": 3
+      }
+    }
+  },
+  "exitCode": 0
+}

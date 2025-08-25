@@ -22,7 +22,7 @@
     "noUncheckedIndexedAccess": false,
     "noImplicitOverride": true,
     "allowJs": false,
-    "types": ["node", "jest"]
+    "types": ["node"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]

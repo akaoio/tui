@@ -13,7 +13,7 @@ import {
     StreamRadio,
     StreamProgressBar,
     StreamSpinner
-} from './components/StreamComponents'
+} from './component/Stream'
 
 export interface TUIOptions {
     title?: string
@@ -109,7 +109,7 @@ export class TUI {
         lines.push('')
         
         // Items
-        items.forEach(item => {
+        items.forEach((item: any) => {
             let iconStr = ''
             let statusColor = ''
             
