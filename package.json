@@ -1,6 +1,6 @@
 {
   "name": "@akaoio/tui",
-  "version": "1.0.7",
+  "version": "1.1.1",
   "description": "Simple and practical Terminal UI framework for Node.js",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

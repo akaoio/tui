@@ -1,29 +1,12 @@
-title: "@akaoio/tui"
-description: "Simple and practical Terminal UI framework for Node.js"
-name: "@akaoio/tui"
-version: "1.0.7"
+title: "My Project"
+description: "A sample project using @akaoio/composer"
+name: "@my/project"
 usage: |
-  import { TUI, Form, Input, Checkbox } from '@akaoio/tui'
+  import { MyProject } from '@my/project'
   
-  const app = new TUI()
-  const form = new Form()
-  form.addComponent(new Input({ label: 'Name', placeholder: 'Enter your name' }))
-  form.addComponent(new Checkbox({ label: 'Subscribe to newsletter' }))
-  app.setRootComponent(form)
-  app.start()
+  const project = new MyProject()
+  project.run()
 features:
-  - "Form Components (Input, Checkbox, Radio, Select, ProgressBar, Spinner)"
-  - "Schema-driven UI Generation"
-  - "Keyboard Navigation and Event Handling"
-  - "Responsive Layout System"
-  - "State Management with Store"
-  - "Virtual Cursor Management"
-  - "Component Registry and Focus Management"
-  - "Theme System with Color Utilities"
-  - "JSON Editor Component"
-  - "Stream-based Components for Real-time Updates"
-architecture:
-  core: "Application, Component, Screen, Keyboard, Layout engines"
-  components: "Reusable UI components (Form, Input, Select, etc.)"
-  utils: "Color, styling, and platform utilities"
-  examples: "Todo app, Dashboard, JSON Editor demonstrations"
+  - "Feature 1"
+  - "Feature 2" 
+  - "Feature 3"
