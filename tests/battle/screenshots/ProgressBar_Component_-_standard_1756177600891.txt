@@ -1,0 +1,7 @@
+=== ProgressBar Component - standard Screenshots ===
+
+Initial State:
+screenshots/screenshot-1756177599475.txt
+
+Final State:
+screenshots/screenshot-1756177600886.txt

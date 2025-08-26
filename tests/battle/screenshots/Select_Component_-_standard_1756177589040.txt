@@ -1,0 +1,7 @@
+=== Select Component - standard Screenshots ===
+
+Initial State:
+screenshots/screenshot-1756177588279.txt
+
+Final State:
+screenshots/screenshot-1756177589038.txt

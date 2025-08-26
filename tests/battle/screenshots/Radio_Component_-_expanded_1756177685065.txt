@@ -1,0 +1,7 @@
+=== Radio Component - expanded Screenshots ===
+
+Initial State:
+screenshots/screenshot-1756177684452.txt
+
+Final State:
+screenshots/screenshot-1756177685061.txt

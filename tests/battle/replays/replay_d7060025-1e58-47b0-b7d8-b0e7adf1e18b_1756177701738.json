@@ -1,0 +1,156 @@
+{
+  "id": "d7060025-1e58-47b0-b7d8-b0e7adf1e18b",
+  "testName": "Progress Bar Animation",
+  "startTime": "2025-08-26T03:08:20.319Z",
+  "endTime": "2025-08-26T03:08:21.737Z",
+  "totalDuration": 1418,
+  "steps": [
+    {
+      "timestamp": 308,
+      "type": "screenshot",
+      "data": {
+        "hash": "40ac65e3430be48f0fc614e170c4b568",
+        "description": "Initial 0% state"
+      },
+      "description": "Initial 0% state"
+    },
+    {
+      "timestamp": 508,
+      "type": "output",
+      "data": {
+        "waitTime": 200
+      },
+      "description": "Wait for auto-increment"
+    },
+    {
+      "timestamp": 509,
+      "type": "screenshot",
+      "data": {
+        "hash": "f0542550aadce89f378fe05534bc9122",
+        "description": "Progress at ~25%"
+      },
+      "description": "Progress at ~25%"
+    },
+    {
+      "timestamp": 810,
+      "type": "output",
+      "data": {
+        "waitTime": 300
+      },
+      "description": "Wait for more progress"
+    },
+    {
+      "timestamp": 811,
+      "type": "screenshot",
+      "data": {
+        "hash": "1956ac1153b0483cd32be7eac2eaee56",
+        "description": "Progress at ~50%"
+      },
+      "description": "Progress at ~50%"
+    },
+    {
+      "timestamp": 1111,
+      "type": "output",
+      "data": {
+        "waitTime": 300
+      },
+      "description": "Wait for more progress"
+    },
+    {
+      "timestamp": 1114,
+      "type": "screenshot",
+      "data": {
+        "hash": "e701c2ba39049cca9ce5d0cb9f302b3d",
+        "description": "Progress at ~75%"
+      },
+      "description": "Progress at ~75%"
+    },
+    {
+      "timestamp": 1415,
+      "type": "output",
+      "data": {
+        "waitTime": 300
+      },
+      "description": "Wait for completion"
+    },
+    {
+      "timestamp": 1417,
+      "type": "screenshot",
+      "data": {
+        "hash": "6818b6d0133c5a2373d7814d1e7e255f",
+        "description": "Progress at 100%"
+      },
+      "description": "Progress at 100%"
+    }
+  ],
+  "screenshots": [
+    {
+      "timestamp": 308,
+      "content": "screenshots/screenshot-1756177700626.txt",
+      "hash": "40ac65e3430be48f0fc614e170c4b568",
+      "dimensions": {
+        "cols": 120,
+        "rows": 20,
+        "name": "wide-short"
+      }
+    },
+    {
+      "timestamp": 509,
+      "content": "screenshots/screenshot-1756177700827.txt",
+      "hash": "f0542550aadce89f378fe05534bc9122",
+      "dimensions": {
+        "cols": 120,
+        "rows": 20,
+        "name": "wide-short"
+      }
+    },
+    {
+      "timestamp": 811,
+      "content": "screenshots/screenshot-1756177701129.txt",
+      "hash": "1956ac1153b0483cd32be7eac2eaee56",
+      "dimensions": {
+        "cols": 120,
+        "rows": 20,
+        "name": "wide-short"
+      }
+    },
+    {
+      "timestamp": 1114,
+      "content": "screenshots/screenshot-1756177701431.txt",
+      "hash": "e701c2ba39049cca9ce5d0cb9f302b3d",
+      "dimensions": {
+        "cols": 120,
+        "rows": 20,
+        "name": "wide-short"
+      }
+    },
+    {
+      "timestamp": 1417,
+      "content": "screenshots/screenshot-1756177701734.txt",
+      "hash": "6818b6d0133c5a2373d7814d1e7e255f",
+      "dimensions": {
+        "cols": 120,
+        "rows": 20,
+        "name": "wide-short"
+      }
+    }
+  ],
+  "metrics": {
+    "totalKeystrokes": 0,
+    "totalScreenshots": 5,
+    "peakMemoryUsage": 8703592,
+    "averageResponseTime": 123.22222222222223,
+    "componentLoadTime": 306,
+    "renderingTimes": [
+      1,
+      200,
+      1,
+      301,
+      1,
+      300,
+      2,
+      301,
+      2
+    ]
+  }
+}

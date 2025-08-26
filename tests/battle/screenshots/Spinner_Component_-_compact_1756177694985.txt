@@ -1,0 +1,7 @@
+=== Spinner Component - compact Screenshots ===
+
+Initial State:
+screenshots/screenshot-1756177693469.txt
+
+Final State:
+screenshots/screenshot-1756177694980.txt

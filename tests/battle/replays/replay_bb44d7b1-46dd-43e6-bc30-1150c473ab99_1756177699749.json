@@ -1,0 +1,203 @@
+{
+  "id": "bb44d7b1-46dd-43e6-bc30-1150c473ab99",
+  "testName": "Select Dropdown Navigation",
+  "startTime": "2025-08-26T03:08:19.230Z",
+  "endTime": "2025-08-26T03:08:19.749Z",
+  "totalDuration": 519,
+  "steps": [
+    {
+      "timestamp": 313,
+      "type": "screenshot",
+      "data": {
+        "hash": "b7de2b5ff9bddd0b375d6c6751e336d7",
+        "description": "Initial closed state"
+      },
+      "description": "Initial closed state"
+    },
+    {
+      "timestamp": 313,
+      "type": "input",
+      "data": {
+        "key": "Enter"
+      },
+      "description": "Open dropdown"
+    },
+    {
+      "timestamp": 413,
+      "type": "output",
+      "data": {
+        "waitTime": 100
+      },
+      "description": "Wait for dropdown animation"
+    },
+    {
+      "timestamp": 414,
+      "type": "screenshot",
+      "data": {
+        "hash": "b9c87867fe77ae28ad5734ec5753394a",
+        "description": "Dropdown opened"
+      },
+      "description": "Dropdown opened"
+    },
+    {
+      "timestamp": 415,
+      "type": "input",
+      "data": {
+        "key": "ArrowDown"
+      },
+      "description": "Move to next option"
+    },
+    {
+      "timestamp": 416,
+      "type": "screenshot",
+      "data": {
+        "hash": "8adf1e844d91f3d9d6e8264ed0c7109f",
+        "description": "Option highlighted"
+      },
+      "description": "Option highlighted"
+    },
+    {
+      "timestamp": 416,
+      "type": "input",
+      "data": {
+        "key": "ArrowDown"
+      },
+      "description": "Move to third option"
+    },
+    {
+      "timestamp": 416,
+      "type": "screenshot",
+      "data": {
+        "hash": "7930aca0a2e67c4426feac2632c846bc",
+        "description": "Third option highlighted"
+      },
+      "description": "Third option highlighted"
+    },
+    {
+      "timestamp": 417,
+      "type": "input",
+      "data": {
+        "key": "ArrowUp"
+      },
+      "description": "Move back to second option"
+    },
+    {
+      "timestamp": 417,
+      "type": "screenshot",
+      "data": {
+        "hash": "029babc0d29fb941ea45f204455465c7",
+        "description": "Second option highlighted"
+      },
+      "description": "Second option highlighted"
+    },
+    {
+      "timestamp": 417,
+      "type": "input",
+      "data": {
+        "key": "Enter"
+      },
+      "description": "Select current option"
+    },
+    {
+      "timestamp": 517,
+      "type": "output",
+      "data": {
+        "waitTime": 100
+      },
+      "description": "Wait for selection animation"
+    },
+    {
+      "timestamp": 519,
+      "type": "screenshot",
+      "data": {
+        "hash": "528f25f79ad121bfe6191276957a4168",
+        "description": "Option selected, dropdown closed"
+      },
+      "description": "Option selected, dropdown closed"
+    }
+  ],
+  "screenshots": [
+    {
+      "timestamp": 313,
+      "content": "screenshots/screenshot-1756177699542.txt",
+      "hash": "b7de2b5ff9bddd0b375d6c6751e336d7",
+      "dimensions": {
+        "cols": 80,
+        "rows": 24,
+        "name": "standard"
+      }
+    },
+    {
+      "timestamp": 414,
+      "content": "screenshots/screenshot-1756177699644.txt",
+      "hash": "b9c87867fe77ae28ad5734ec5753394a",
+      "dimensions": {
+        "cols": 80,
+        "rows": 24,
+        "name": "standard"
+      }
+    },
+    {
+      "timestamp": 416,
+      "content": "screenshots/screenshot-1756177699645.txt",
+      "hash": "8adf1e844d91f3d9d6e8264ed0c7109f",
+      "dimensions": {
+        "cols": 80,
+        "rows": 24,
+        "name": "standard"
+      }
+    },
+    {
+      "timestamp": 416,
+      "content": "screenshots/screenshot-1756177699646.txt",
+      "hash": "7930aca0a2e67c4426feac2632c846bc",
+      "dimensions": {
+        "cols": 80,
+        "rows": 24,
+        "name": "standard"
+      }
+    },
+    {
+      "timestamp": 417,
+      "content": "screenshots/screenshot-1756177699647.txt",
+      "hash": "029babc0d29fb941ea45f204455465c7",
+      "dimensions": {
+        "cols": 80,
+        "rows": 24,
+        "name": "standard"
+      }
+    },
+    {
+      "timestamp": 519,
+      "content": "screenshots/screenshot-1756177699748.txt",
+      "hash": "528f25f79ad121bfe6191276957a4168",
+      "dimensions": {
+        "cols": 80,
+        "rows": 24,
+        "name": "standard"
+      }
+    }
+  ],
+  "metrics": {
+    "totalKeystrokes": 5,
+    "totalScreenshots": 6,
+    "peakMemoryUsage": 8688488,
+    "averageResponseTime": 15.846153846153847,
+    "componentLoadTime": 311,
+    "renderingTimes": [
+      1,
+      0,
+      100,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      101,
+      1
+    ]
+  }
+}

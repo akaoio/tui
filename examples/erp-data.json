@@ -1,0 +1,149 @@
+{
+  "customers": [
+    {
+      "id": 2,
+      "name": "Company 2",
+      "contact": "Contact 2"
+    },
+    {
+      "id": 3,
+      "name": "Company 3",
+      "contact": "Contact 3"
+    },
+    {
+      "id": 4,
+      "name": "Company 4",
+      "contact": "Contact 4"
+    }
+  ],
+  "inventory": [
+    {
+      "id": 101,
+      "sku": "PRD-001",
+      "name": "Widget A",
+      "qty": 150,
+      "price": 29.99,
+      "category": "Hardware",
+      "reorder": 50
+    },
+    {
+      "id": 102,
+      "sku": "PRD-002",
+      "name": "Widget B",
+      "qty": 75,
+      "price": 49.99,
+      "category": "Hardware",
+      "reorder": 30
+    },
+    {
+      "id": 103,
+      "sku": "SRV-001",
+      "name": "Service Plan",
+      "qty": 999,
+      "price": 199.99,
+      "category": "Service",
+      "reorder": 0
+    },
+    {
+      "id": 104,
+      "sku": "PRD-003",
+      "name": "Widget C",
+      "qty": 12,
+      "price": 99.99,
+      "category": "Hardware",
+      "reorder": 20
+    },
+    {
+      "id": 105,
+      "sku": "ACC-001",
+      "name": "Cable Set",
+      "qty": 200,
+      "price": 9.99,
+      "category": "Accessory",
+      "reorder": 100
+    },
+    {
+      "sku": "3ANEW-001",
+      "name": "Super Widget",
+      "qty": 50,
+      "price": 149.99,
+      "category": "Premium",
+      "reorder": 10,
+      "id": 106
+    }
+  ],
+  "orders": [
+    {
+      "id": 1001,
+      "customer": "Acme Corp",
+      "date": "2024-08-20",
+      "total": 2499.9,
+      "status": "Shipped",
+      "items": 3
+    },
+    {
+      "id": 1002,
+      "customer": "TechStart Inc",
+      "date": "2024-08-21",
+      "total": 899.95,
+      "status": "Processing",
+      "items": 2
+    },
+    {
+      "id": 1003,
+      "customer": "Global Trade Ltd",
+      "date": "2024-08-22",
+      "total": 15999.5,
+      "status": "Pending",
+      "items": 10
+    },
+    {
+      "id": 1004,
+      "customer": "Local Shop",
+      "date": "2024-08-23",
+      "total": 299.97,
+      "status": "Delivered",
+      "items": 1
+    }
+  ],
+  "invoices": [
+    {
+      "id": 5001,
+      "order": 1001,
+      "customer": "Acme Corp",
+      "amount": 2499.9,
+      "due": "2024-09-20",
+      "status": "Paid"
+    },
+    {
+      "id": 5002,
+      "order": 1002,
+      "customer": "TechStart Inc",
+      "amount": 899.95,
+      "due": "2024-09-21",
+      "status": "Pending"
+    },
+    {
+      "id": 5003,
+      "order": 1003,
+      "customer": "Global Trade Ltd",
+      "amount": 15999.5,
+      "due": "2024-09-22",
+      "status": "Pending"
+    },
+    {
+      "id": 5004,
+      "order": 1004,
+      "customer": "Local Shop",
+      "amount": 299.97,
+      "due": "2024-09-23",
+      "status": "Overdue"
+    }
+  ],
+  "nextIds": {
+    "customer": 7,
+    "inventory": 107,
+    "order": 1005,
+    "invoice": 5005
+  }
+}
