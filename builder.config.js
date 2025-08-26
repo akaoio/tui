@@ -1,9 +1,11 @@
-export default {
+module.exports = {
   entry: "src/index.ts",
   formats: ["cjs", "esm"],
   dts: true,
   sourcemap: true,
   clean: true,
-  target: "es2020",
-  external: []
+  target: "library",
+  external: [],
+  bundle: true,
+  splitting: false
 }

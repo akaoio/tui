@@ -54,10 +54,10 @@ describe('Form submit', () => {
 
   test('should handle components with undefined getValue', () => {
     const component1 = {
-      getValue: jest.fn().mockReturnValue(undefined)
+      getValue: () => undefined
     };
     const component2 = {
-      getValue: jest.fn().mockReturnValue(null)
+      getValue: () => null
     };
 
     mockContext.components.set('comp1', component1);

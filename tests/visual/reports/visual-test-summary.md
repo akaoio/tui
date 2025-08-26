@@ -1,6 +1,6 @@
 # TUI Visual Testing Summary
 
-**Generated**: 2025-08-25T12:09:53.734Z
+**Generated**: 2025-08-25T16:04:59.016Z
 **Purpose**: Allow agents to "see" TUI output without physical displays
 
 ## Overall Results

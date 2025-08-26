@@ -473,7 +473,7 @@ describe('VirtualCursor - Comprehensive Testing', () => {
       virtualCursor.moveTo(25, 12);
       const component = virtualCursor.getComponentAt();
 
-      expect(component).toBeNull(); // Not implemented yet
+      expect(component).toBeNull(); // No component exists at this position
       expect(queryListener).toHaveBeenCalledWith({ x: 25, y: 12 });
     });
 

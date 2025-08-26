@@ -29,10 +29,12 @@ describe('Low Coverage Boost Tests', () => {
       expect(tui.isAbsoluteMode()).toBe(false);
       
       // Test clear method
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+      const originalConsoleLog = console.log;
+      const clearCalls = [];
+      console.log = (...args) => clearCalls.push(args);
       tui.clear();
-      expect(consoleSpy).toHaveBeenCalled();
-      consoleSpy.mockRestore();
+      expect(clearCalls.length).toBeGreaterThan(0);
+      console.log = originalConsoleLog;
       
       // Test header creation
       const header = tui2.createHeader(); // Use tui2 which has title 'Test'
@@ -50,14 +52,16 @@ describe('Low Coverage Boost Tests', () => {
       expect(compactStatus).toContain('Compact');
       
       // Test message methods
-      const errorSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+      const originalConsoleLog = console.log;
+      const messageCalls = [];
+      console.log = (...args) => messageCalls.push(args);
       tui.showError('Error message');
       tui.showError('Error with details', 'Details here');
       tui.showSuccess('Success message');
       tui.showWarning('Warning message'); 
       tui.showInfo('Info message');
-      expect(errorSpy).toHaveBeenCalled();
-      errorSpy.mockRestore();
+      expect(messageCalls.length).toBeGreaterThan(0);
+      console.log = originalConsoleLog;
       
       // Test progress and spinner
       const progress = tui.showProgress('Loading', 25, 100);
