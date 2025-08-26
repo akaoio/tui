@@ -21,6 +21,7 @@ import { getDimensions } from './getDimensions'
 import { getBreakpoint } from './getBreakpoint'
 import { getResponsiveValue } from './getResponsiveValue'
 import { calculateDimensions } from './calculateDimensions'
+import { detectTerminalCapabilities, TerminalCapabilities } from './detectTerminalCapabilities'
 
 export class Viewport extends EventEmitter {
   private static instance: Viewport
@@ -28,6 +29,11 @@ export class Viewport extends EventEmitter {
   private breakpoints!: Breakpoints
   private resizeTimeout?: NodeJS.Timeout
   private resizeDebounceMs = 100
+  private capabilities!: TerminalCapabilities
+  private aspectRatio!: number
+  private dimensionHistory!: Array<Dimensions & { timestamp: number }>
+  private maxHistorySize!: number
+  private _cleanupResize?: () => void
   
   private constructor() {
     super()
@@ -183,6 +189,68 @@ export class Viewport extends EventEmitter {
       rowHeight: Math.floor(this.dimensions.height / rows)
     }
   }
+  
+  /**
+   * Get terminal capabilities
+   */
+  getCapabilities(): TerminalCapabilities {
+    return this.capabilities
+  }
+  
+  /**
+   * Check if terminal supports a specific feature
+   */
+  supports(feature: keyof TerminalCapabilities): boolean {
+    return !!this.capabilities[feature]
+  }
+  
+  /**
+   * Get dimension history (useful for animations/transitions)
+   */
+  getDimensionHistory(): Array<Dimensions & { timestamp: number }> {
+    return [...this.dimensionHistory]
+  }
+  
+  /**
+   * Get aspect ratio
+   */
+  getAspectRatio(): number {
+    return this.aspectRatio
+  }
+  
+  /**
+   * Check if viewport is in portrait mode
+   */
+  isPortrait(): boolean {
+    return this.dimensions.height > this.dimensions.width
+  }
+  
+  /**
+   * Check if viewport is in landscape mode
+   */
+  isLandscape(): boolean {
+    return this.dimensions.width > this.dimensions.height
+  }
+  
+  /**
+   * Get safe area (accounting for terminal chrome/borders)
+   */
+  getSafeArea(padding: number = 1): Dimensions {
+    return {
+      width: Math.max(1, this.dimensions.width - (padding * 2)),
+      height: Math.max(1, this.dimensions.height - (padding * 2))
+    }
+  }
+  
+  /**
+   * Cleanup and destroy viewport instance
+   */
+  destroy(): void {
+    if (this._cleanupResize) {
+      this._cleanupResize()
+    }
+    this.removeAllListeners()
+  }
 }
 
 // Re-export types
@@ -194,4 +262,5 @@ export {
   Dimensions, 
   LayoutInfo 
 } from './types'
+export { TerminalCapabilities } from './detectTerminalCapabilities'
 export default Viewport
