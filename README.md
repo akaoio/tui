@@ -1,31 +1,41 @@
-# @akaoio/@akaoio/tui
+# @akaoio/tui
 
-Simple and practical Terminal UI framework for Node.js
+Modern zero-dependency Terminal UI framework for Node.js with TypeScript
 
-**Version**: 1.1.1
-**License**: MIT
-**Repository**: https://github.com/akaoio/tui.git
+## Features
+
+
+- Zero Dependencies - Pure Node.js/TypeScript implementation
+
+- Component-Based - Modular architecture with reusable components
+
+- Type Safety - Full TypeScript support with strict typing
+
+- Event-Driven - Uses Node.js EventEmitter for reactive updates
+
+- Schema-Driven - Create UIs from JSON schemas
+
+- Keyboard Navigation - Full keyboard navigation support
+
 
 ## Installation
 
 ```bash
-npm install @akaoio/@akaoio/tui
+npm install @akaoio/tui
 ```
 
 ## Usage
 
-[Usage documentation here]
+import { TUI, Input, Button } from '@akaoio/tui'
 
-## Contributing
+const app = new TUI()
 
-Please read [CONTRIBUTING.md](../../CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+const input = new Input({ placeholder: 'Enter your name' })
+const button = new Button({ text: 'Submit' })
 
-## License
+app.add(input)
+app.add(button)
+app.start()
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
-
-*Part of the AKAO ecosystem - Building the future of development tooling*
-
-*Generated: 2025-08-26T11:41:37.173Z*
+Generated with ❤️ by @akaoio/composer
