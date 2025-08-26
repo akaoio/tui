@@ -1,7 +1,0 @@
-=== Radio Component - standard Screenshots ===
-
-Initial State:
-screenshots/screenshot-1756177592875.txt
-
-Final State:
-screenshots/screenshot-1756177593489.txt

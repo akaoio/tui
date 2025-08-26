@@ -1,7 +1,0 @@
-=== Form Component - wide Screenshots ===
-
-Initial State:
-screenshots/screenshot-1756177686920.txt
-
-Final State:
-screenshots/screenshot-1756177688342.txt

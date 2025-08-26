@@ -1,7 +1,0 @@
-=== Select Component - wide Screenshots ===
-
-Initial State:
-screenshots/screenshot-1756177679994.txt
-
-Final State:
-screenshots/screenshot-1756177680759.txt

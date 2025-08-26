@@ -1,7 +1,0 @@
-=== Input Component - ultra-wide Screenshots ===
-
-Initial State:
-screenshots/screenshot-1756177587193.txt
-
-Final State:
-screenshots/screenshot-1756177588060.txt

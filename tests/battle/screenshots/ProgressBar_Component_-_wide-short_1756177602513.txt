@@ -1,7 +1,0 @@
-=== ProgressBar Component - wide-short Screenshots ===
-
-Initial State:
-screenshots/screenshot-1756177601104.txt
-
-Final State:
-screenshots/screenshot-1756177602512.txt

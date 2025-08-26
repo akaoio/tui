@@ -1,7 +1,0 @@
-=== JsonEditor Component - large Screenshots ===
-
-Initial State:
-screenshots/screenshot-1756177698007.txt
-
-Final State:
-screenshots/screenshot-1756177698872.txt

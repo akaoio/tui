@@ -1,7 +1,0 @@
-=== Select Component - narrow Screenshots ===
-
-Initial State:
-screenshots/screenshot-1756177680977.txt
-
-Final State:
-screenshots/screenshot-1756177681744.txt

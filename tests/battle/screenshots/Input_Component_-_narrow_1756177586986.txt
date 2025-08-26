@@ -1,7 +1,0 @@
-=== Input Component - narrow Screenshots ===
-
-Initial State:
-screenshots/screenshot-1756177586125.txt
-
-Final State:
-screenshots/screenshot-1756177586985.txt

@@ -1,7 +1,0 @@
-=== Spinner Component - spacious Screenshots ===
-
-Initial State:
-screenshots/screenshot-1756177604434.txt
-
-Final State:
-screenshots/screenshot-1756177605939.txt

@@ -1,7 +1,0 @@
-=== Form Component - standard Screenshots ===
-
-Initial State:
-screenshots/screenshot-1756177685279.txt
-
-Final State:
-screenshots/screenshot-1756177686702.txt

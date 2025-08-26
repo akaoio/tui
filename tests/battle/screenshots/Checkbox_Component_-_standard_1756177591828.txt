@@ -1,7 +1,0 @@
-=== Checkbox Component - standard Screenshots ===
-
-Initial State:
-screenshots/screenshot-1756177591209.txt
-
-Final State:
-screenshots/screenshot-1756177591821.txt

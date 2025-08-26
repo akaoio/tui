@@ -13,3 +13,30 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Auto-generated test artifacts
+tests/battle/screenshots/
+tests/battle/replays/
+tests/battle/reports/
+tests/battle/diffs/
+tests/battle/flow-screenshots/
+tests/battle/integration-results/
+tests/battle/master-reports/
+tests/battle/demos/
+*_frame_*.txt
+*_report_*.md
+replay_*.json
+diff_*.md
+
+# Auto-generated data files  
+examples/erp-data.json
+
+# Temporary files
+tmp/
+screenshots/
+logs/
+debug-*.js
+
+# Generated documentation
+BATTLE-TEST-*.md
+COMPREHENSIVE-TEST-SUITE.md
+EXAMPLES.md
